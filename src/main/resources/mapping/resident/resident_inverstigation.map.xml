@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doctor.resident_inv">
+    <resultMap id="result_map" type="com.doctor.resident.dto.ResidentInvDTO" >
+        <id column="id" property="id"/>
+        <result property="resId" column="resId"/>
+        <result property="disease" column="disease"/>
+        <result property="type" column="type"/>
+        <result property="time1" column="time1"/>
+        <result property="time2" column="time2"/>
+        <result property="createTime" column="createTime"/>
+        <result property="modifyTime" column="modifyTime"/>
+    </resultMap>
+
+    <!-- 数据库字段 -->
+    <sql id="columns">
+        id, resId, disease, type, time1, time2, createTime, modifyTime
+    </sql>
+
+    <!-- 查询条件 -->
+    <sql id="conditions">
+        <where>
+            <choose>
+                <when test="id != null">and id = #{id}</when>
+                <otherwise>
+                    <if test="name != null"> and name = #{name}</if>
+                    <if test="resId != null"> and name = #{resId}</if>
+                </otherwise>
+            </choose>
+        </where>
+    </sql>
+
+    <!-- 查询结果集 -->
+    <select id="find" resultMap="result_map"
+            parameterType="com.doctor.resident.dto.ResidentQuery">
+        select
+        <include refid="columns"/>
+        from resident_inverstigation
+        <include refid="conditions"/>
+        ORDER BY #{sort, jdbcType=VARCHAR}  #{order, jdbcType=VARCHAR}
+        <if test="paging == true">
+            limit #{pageIndex, jdbcType=INTEGER},#{pageSize, jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <!-- 查询某条记录 -->
+    <select id="get" resultMap="result_map" parameterType="com.doctor.resident.dto.ResidentQuery">
+        select
+        <include refid="columns"/>
+        from resident_inverstigation
+        <include refid="conditions"/>
+        limit 1
+    </select>
+
+    <!-- 统计查询结果数量 -->
+    <select id="count" resultType="int" parameterType="com.doctor.resident.dto.ResidentQuery">
+        select count(*) from resident_inverstigation
+        <include refid="conditions"/>
+    </select>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="com.doctor.resident.dto.ResidentQuery">
+        delete from resident_inverstigation where id = #{id}
+    </delete>
+
+    <!--<result property="resId" column="resId"/>
+        <result property="disease" column="disease"/>
+        <result property="type" column="type"/>
+        <result property="time1" column="time1"/>
+        <result property="time2" column="time2"/>-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.doctor.resident.dto.ResidentDTO">
+        insert into
+        resident_inverstigation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="resId != null">
+                resId,
+            </if>
+            <if test="disease != null">
+                disease,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="time1 != null">
+                time1,
+            </if>
+            <if test="time2 != null">
+                time2,
+            </if>
+            createTime,
+            modifyTime,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="resId != null">
+                #{resId, jdbcType=INTEGER},
+            </if>
+            <if test="disease != null">
+                #{disease, jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type, jdbcType=INTEGER},
+            </if>
+            <if test="time1 != null">
+                #{time1, jdbcType=VARCHAR},
+            </if>
+            <if test="time2 != null">
+                #{time2, jdbcType=VARCHAR},
+            </if>
+            now(),
+            now(),
+        </trim>
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.doctor.resident.dto.ResidentDTO">
+        UPDATE resident_inverstigation
+        <set>
+            <if test="resId != null">
+                resId = #{resId, jdbcType=INTEGER},
+            </if>
+            <if test="disease != null">
+                disease = #{disease, jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type, jdbcType=INTEGER},
+            </if>
+            <if test="time1 != null">
+                time1 = #{time1, jdbcType=VARCHAR},
+            </if>
+            <if test="time2 != null">
+                time2 = #{time2, jdbcType=VARCHAR},
+            </if>
+            modifyTime = now()
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+</mapper>

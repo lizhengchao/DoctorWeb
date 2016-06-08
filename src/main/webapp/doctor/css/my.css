@@ -1,0 +1,33 @@
+.tip{
+    color: #444444;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.unit{
+    color: #282828;
+    font-size: small;
+}
+
+.myselect{
+    display: inline-block;
+    padding: 4px;
+    font-size: 13px;
+    line-height: 18px;
+    color: #808080;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    height: 30px;
+}
+
+#modalLogin .modal-body input, #modalReg .modal-body input, #modalMail .modal-body input {
+    height: 4em;
+    line-height: 4em;
+    margin-top: -1px;
+    border: 0;
+    border-bottom: 1px solid #e5e5e5;
+    border-top: 1px solid #e5e5e5;
+    box-shadow: none;
+    border-radius: 0;
+}
+

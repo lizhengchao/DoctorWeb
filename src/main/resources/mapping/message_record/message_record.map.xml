@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doctor.message_record">
+    <resultMap id="result_map" type="com.doctor.message_record.dto.MessageReocrdDTO" >
+        <id column="id" property="id"/>
+        <result property="resId" column="resId"/>
+        <result property="comHosId" column="comHosId"/>
+        <result property="docId" column="docId"/>
+        <result property="requestMessage" column="requestMessage"/>
+        <result property="answerMessage" column="answerMessage"/>
+        <result property="requestTime" column="requestTime"/>
+        <result property="answerTime" column="answerTime"/>
+    </resultMap>
+
+    <!-- 数据库字段 -->
+    <sql id="columns">
+        id, resId, comHosId, docId, requestMessage, answerMessage, requestTime, answerTime
+    </sql>
+
+    <!-- 查询条件 -->
+    <sql id="conditions">
+        <where>
+            <choose>
+                <when test="id != null">and id = #{id}</when>
+                <otherwise>
+                    <if test="resId != null"> and resId = #{resId}</if>
+                    <if test="comHosId != null"> and comHosId = #{comHosId}</if>
+                    <if test="docId != null"> and docId = #{docId}</if>
+                </otherwise>
+            </choose>
+        </where>
+    </sql>
+
+    <!-- 查询结果集 -->
+    <select id="find" resultMap="result_map"
+            parameterType="com.doctor.message_record.dto.MessageRecordQuery">
+        select
+        <include refid="columns"/>
+        from message_record
+        <include refid="conditions"/>
+        ORDER BY #{sort, jdbcType=VARCHAR}  #{order, jdbcType=VARCHAR}
+        <if test="paging == true">
+            limit #{pageIndex, jdbcType=INTEGER},#{pageSize, jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <!-- 查询某条记录 -->
+    <select id="get" resultMap="result_map" parameterType="com.doctor.message_record.dto.MessageRecordQuery">
+        select
+        <include refid="columns"/>
+        from message_record
+        <include refid="conditions"/>
+        limit 1
+    </select>
+
+    <!-- 统计查询结果数量 -->
+    <select id="count" resultType="int" parameterType="com.doctor.message_record.dto.MessageRecordQuery">
+        select count(*) from message_record
+        <include refid="conditions"/>
+    </select>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="com.doctor.message_record.dto.MessageRecordQuery">
+        delete from message_record where id = #{id}
+    </delete>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.doctor.message_record.dto.MessageReocrdDTO">
+        insert into
+        message_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="resId != null">
+                resId,
+            </if>
+            <if test="comHosId != null">
+                comHosId,
+            </if>
+            <if test="docId != null">
+                docId,
+            </if>
+            <if test="requestMessage != null">
+                requestMessage,
+            </if>
+            <if test="answerMessage != null">
+                answerMessage,
+            </if>
+            requestTime,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="resId != null">
+                #{resId, jdbcType=INTEGER},
+            </if>
+            <if test="comHosId != null">
+                #{comHosId, jdbcType=INTEGER},
+            </if>
+            <if test="docId != null">
+                #{docId, jdbcType=INTEGER},
+            </if>
+            <if test="requestMessage != null">
+                #{requestMessage, jdbcType=VARCHAR},
+            </if>
+            <if test="answerMessage != null">
+                #{answerMessage, jdbcType=VARCHAR},
+            </if>
+            now(),
+        </trim>
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.doctor.message_record.dto.MessageReocrdDTO">
+        UPDATE message_record
+        <set>
+            <if test="resId != null">
+                resId = #{resId, jdbcType=INTEGER},
+            </if>
+            <if test="comHosId != null">
+                comHosId = #{comHosId, jdbcType=INTEGER},
+            </if>
+            <if test="docId != null">
+                docId = #{docId, jdbcType=INTEGER},
+            </if>
+            <if test="requestMessage != null">
+                requestMessage = #{requestMessage, jdbcType=VARCHAR},
+            </if>
+            <if test="answerMessage != null">
+                answerMessage = #{answerMessage, jdbcType=VARCHAR},
+            </if>
+            <if test="answerTime != null">
+                answerTime = #{answerTime, jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+</mapper>

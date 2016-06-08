@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doctor.resident">
+    <resultMap id="result_map" type="com.doctor.resident.dto.ResidentDTO" >
+        <id column="id" property="id"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="identificationId" column="identificationId"/>
+        <result property="birthday" column="birthday"/>
+        <result property="homeAddress" column="homeAddress"/>
+        <result property="phoneNumber" column="phoneNumber"/>
+        <result property="familyMembers" column="familyMembers"/>
+        <result property="comHosId" column="comHosId"/>
+        <result property="createTime" column="createTime"/>
+        <result property="modifyTime" column="modifyTime"/>
+    </resultMap>
+
+    <!-- 数据库字段 -->
+    <sql id="columns">
+        id, name, sex, identificationId, birthday, homeAddress, phoneNumber,
+        familyMembers, comHosId, createTime, modifyTime
+    </sql>
+
+    <!-- 查询条件 -->
+    <sql id="conditions">
+        <where>
+            <choose>
+                <when test="id != null">and id = #{id}</when>
+                <otherwise>
+                    <if test="name != null"> and name = #{name}</if>
+                    <if test="sex != null"> and sex = #{sex}</if>
+                    <if test="identificationId != null"> and identificationId = #{identificationId}</if>
+                    <if test="birthday != null"> and birthday = #{birthday}</if>
+                    <if test="phoneNumber != null"> and phoneNumber = #{phoneNumber}</if>
+                    <if test="comHosId != null"> and comHosId = #{comHosId}</if>
+                    <if test="nameLike != null"> and name like CONCAT(CONCAT('%', #{nameLike}), '%')</if>
+                    <if test="vagueValue != null">and (name like '%${vagueValue}%'
+                        or homeAddress LIKE '%${vagueValue}%'or phoneNumber like '%${vagueValue}%'
+                        or sex LIKE '%${vagueValue}%' or identificationId LIKE '%${vagueValue}%'
+                        or birthday LIKE '%${vagueValue}%' or identificationId LIKE '%${vagueValue}%') </if>
+                </otherwise>
+            </choose>
+        </where>
+    </sql>
+
+    <!-- 查询结果集 -->
+    <select id="find" resultMap="result_map"
+            parameterType="com.doctor.resident.dto.ResidentQuery">
+        select
+        <include refid="columns"/>
+        from resident
+        <include refid="conditions"/>
+        ORDER BY #{sort, jdbcType=VARCHAR}  #{order, jdbcType=VARCHAR}
+        <if test="paging == true">
+            limit #{pageIndex, jdbcType=INTEGER},#{pageSize, jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <!-- 查询某条记录 -->
+    <select id="get" resultMap="result_map" parameterType="com.doctor.resident.dto.ResidentQuery">
+        select
+        <include refid="columns"/>
+        from resident
+        <include refid="conditions"/>
+        limit 1
+    </select>
+
+    <!-- 统计查询结果数量 -->
+    <select id="count" resultType="int" parameterType="com.doctor.resident.dto.ResidentQuery">
+        select count(*) from resident
+        <include refid="conditions"/>
+    </select>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="com.doctor.resident.dto.ResidentQuery">
+        delete from resident where id = #{id}
+    </delete>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.doctor.resident.dto.ResidentDTO">
+        insert into
+        resident
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                name,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="identificationId != null">
+                identificationId,
+            </if>
+            <if test="birthday != null">
+                birthday,
+            </if>
+            <if test="homeAddress != null">
+                homeAddress,
+            </if>
+            <if test="phoneNumber != null">
+                phoneNumber,
+            </if>
+            <if test="familyMembers != null">
+                familyMembers,
+            </if>
+            <if test="comHosId != null">
+                comHosId,
+            </if>
+            createTime,
+            modifyTime,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name, jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex, jdbcType=INTEGER},
+            </if>
+            <if test="identificationId != null">
+                #{identificationId, jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null">
+                #{birthday, jdbcType=VARCHAR},
+            </if>
+            <if test="homeAddress != null">
+                #{homeAddress, jdbcType=VARCHAR},
+            </if>
+            <if test="phoneNumber != null">
+                #{phoneNumber, jdbcType=INTEGER},
+            </if>
+            <if test="familyMembers != null">
+                #{familyMembers, jdbcType=VARCHAR},
+            </if>
+            <if test="comHosId != null">
+                #{comHosId, jdbcType=INTEGER},
+            </if>
+            now(),
+            now(),
+        </trim>
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.doctor.resident.dto.ResidentDTO">
+        UPDATE resident
+        <set>
+            <if test="name != null">
+                name = #{name, jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex, jdbcType=INTEGER},
+            </if>
+            <if test="identificationId != null">
+                identificationId = #{identificationId, jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday, jdbcType=VARCHAR},
+            </if>
+            <if test="homeAddress != null">
+                homeAddress = #{homeAddress, jdbcType=VARCHAR},
+            </if>
+            <if test="phoneNumber != null">
+                phoneNumber = #{phoneNumber, jdbcType=INTEGER},
+            </if>
+            <if test="familyMembers != null">
+                familyMembers = #{familyMembers, jdbcType=VARCHAR},
+            </if>
+            <if test="comHosId != null">
+                comHosId = #{comHosId, jdbcType=INTEGER},
+            </if>
+            modifyTime = now()
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+</mapper>

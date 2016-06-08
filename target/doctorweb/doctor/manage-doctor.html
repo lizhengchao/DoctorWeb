@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>社区医疗辅助系统</title>
+		<meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+		<link rel="stylesheet" href="css/fullcalendar.css" />
+		<link rel="stylesheet" href="css/unicorn.main.css" />
+		<link rel="stylesheet" href="css/unicorn.grey.css" class="skin-color" />
+        <link rel="stylesheet" href="css/jquery-ui.css" />
+        <link rel="stylesheet" href="css/uniform.css" />
+        <link rel="stylesheet" href="css/select2.css" />
+        <link rel="stylesheet" href="assets/bootstrap-table/src/bootstrap-table.css">
+        <link rel="stylesheet" href="assets/examples.css">
+        <link rel="stylesheet" href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">
+        <style>
+            .modal {
+                z-index: 99999 !important;
+                position: fixed;
+                top: 10%;
+                left: 50%;
+                bottom: 20%;;
+                width: 560px;
+                margin-left: -280px;
+                background-color: #fff;
+                box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+                background-clip: padding-box;
+                border: 1px solid rgba(0, 0, 0, 0.3);
+                border-radius: 6px;
+            }
+            .myselect {
+                display: inline-block;
+                padding: 4px;
+                font-size: 13px;
+                line-height: 18px;
+                color: #808080;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                height: 30px;
+            }
+            input[type="text"] {
+                height: 30px;
+            }
+        </style>
+    </head>
+	<body>
+
+
+		<div id="header">
+			<h1><a href="./dashboard.html">社区医疗辅助系统</a></h1>
+		</div>
+
+        <div id="user-nav" class="navbar navbar-inverse" style="min-height: 32px">
+            <ul class="nav btn-group">
+               <li class="btn btn-inverse dropdown" id="menu-messages"><a href="#" data-toggle="dropdown" data-target="#menu-messages" class="dropdown-toggle"><i class="icon icon-cog"></i> <span class="text">个人中心</span> <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="sAdd" title="" href="#">基本信息</a></li>
+                        <li><a class="sInbox" title="" href="#">密码</a></li>
+                        <li><a class="sOutbox" title="" href="#">个人头衔</a></li>
+                    </ul>
+                </li>
+                <li class="btn btn-inverse"><a title="" href="login.html"><i class="icon icon-share-alt"></i> <span class="text">注销</span></a></li>
+            </ul>
+        </div>
+
+		<div id="sidebar">
+			<ul>
+                <li><a href="manage-index.html"><i class="icon icon-th-list"></i> <span>社区医院管理</span></a>
+                <li><a href="manage-doctor.html"><i class="icon icon-th-list"></i> <span>医生管理</span></a></li>
+			</ul>
+
+		</div>
+
+		<div id="style-switcher">
+			<i class="icon-arrow-left icon-white"></i>
+			<span>Style:</span>
+			<a href="#grey" style="background-color: #555555;border-color: #aaaaaa;"></a>
+            <a href="#light-blue" style="background-color: #8399b0;"></a>
+			<a href="#blue" style="background-color: #2D2F57;"></a>
+			<a href="#red" style="background-color: #673232;"></a>
+            <a href="#red-green" style="background-image: url('img/demo/red-green.png');background-repeat: no-repeat;"></a>
+		</div>
+
+		<div id="content">
+			<div id="content-header">
+				<h1>医生管理</h1>
+			</div>
+			<div id="breadcrumb">
+				<a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> 医生管理</a>
+			</div>
+			<div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="control-group">
+                            <label class="control-label">选择医院</label>
+                            <div class="controls">
+                                <select class="myselect" id="comhosSelect1"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="control-group">
+                            <label class="control-label">选择职称</label>
+                            <div class="controls">
+                                <select class="myselect" id="titleSelect">
+                                    <option value="">全部</option>
+                                    <option value="0">医师</option>
+                                    <option value="1">主管医师</option>
+                                    <option value="2">副主任医师</option>
+                                    <option value="3">主任医师</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="control-group">
+                            <label class="control-label">选择职业类别</label>
+                            <div class="controls">
+                                <select class="myselect" id="practiceTypeSelect">
+                                    <option value="">全部</option>
+                                    <option value="0">临床</option>
+                                    <option value="1">公共卫生</option>
+                                    <option value="2">口腔</option>
+                                    <option value="3">中医</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1" style="padding-top: 20px">
+                        <button class="btn btn-primary" id="refresh">删选</button>
+                    </div>
+                </div>
+                <div id="toolbar">
+                    <button id="remove" class="btn btn-danger" disabled>
+                        <i class="glyphicon glyphicon-remove"></i> 删除
+                    </button>
+                    <button id="add" href="#myModal" data-toggle="modal" class="btn btn-success">
+                        <i class="glyphicon glyphicon-plus"></i> 新增
+                    </button>
+                    <button id="update" href="#myModal" data-toggle="modal" class="btn btn-warning" disabled>
+                        <i class="glyphicon glyphicon-pencil"></i> 修改
+                    </button>
+                    <button id="updatePassword" href="#updatePasswordModal" data-toggle="modal" class="btn btn-warning" disabled>
+                        <i class="glyphicon glyphicon-pencil"></i> 修改密码
+                    </button>
+                    <div id="updatePasswordModal" class="modal">
+                        <div class="modal-header">
+                            <button data-dismiss="modal" class="close" type="button">×</button>
+                            <h3>管理员修改密码</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="control-group">
+                                <label class="control-label">请输入新密码</label>
+                                <div class="controls">
+                                    <input type="password" id="newPassword">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">请输入新密码</label>
+                                <div class="controls">
+                                    <input type="password" id="newPassword2">
+                                </div>
+                                <p id="errorInfo2"></p>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="updatePasswordButton">确定</button>
+                        </div>
+                    </div>
+                    <div id="myModal" class="modal">
+                        <div class="modal-header">
+                            <button data-dismiss="modal" class="close" type="button">×</button>
+                            <h3 id = "addOrUpdateLabel"></h3>
+                        </div>
+                        <div class="modal-body">
+                            <form action="#" class="form-horizontal">
+                                <div class="control-group">
+                                    <label class="control-label">医生姓名</label>
+                                    <div class="controls">
+                                        <input type="text" name="name"/>
+                                    </div>
+                                </div>
+                                <div class="control-group" id="password">
+                                    <label class="control-label">密码</label>
+                                    <div class="controls">
+                                        <input type="password" name="password" placeholder="密码长度为3-15"/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">身份证号</label>
+                                    <div class="controls">
+                                        <input type="text" name="identificationId" placeholder="请输入正确的身份证号"/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">手机号</label>
+                                    <div class="controls">
+                                        <input type="text" name="phoneNumber" placeholder="请输入11位手机号"/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">医师资格证书编码</label>
+                                    <div class="controls">
+                                        <input type="text" name="phyQuaCerCode"/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">医师执业证书编码</label>
+                                    <div class="controls">
+                                        <input type="text" name="phyPraCerCode"/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">医生职称</label>
+                                    <div class="controls">
+                                        <select  class="form-control" style="width: 80% !important" name="title">
+                                            <option value="0">医师</option>
+                                            <option value="1">主管医师</option>
+                                            <option value="2">副主任医师</option>
+                                            <option value="3">主任医师</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">职业类别</label>
+                                    <div class="controls">
+                                        <select  class="form-control" style="width: 80% !important" name="practiceType">
+                                            <option value="0">临床</option>
+                                            <option value="1">公共卫生</option>
+                                            <option value="2">口腔</option>
+                                            <option value="3">中医</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">医生简述</label>
+                                    <div class="controls">
+                                        <input type="text" name="description"/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">擅长方向</label>
+                                    <div class="controls">
+                                        <input type="text" name="specialty"/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">所属医院</label>
+                                    <div class="controls">
+                                        <select  class="form-control" style="width: 80% !important" id="comhosSelect">
+                                        </select>
+                                        <p id="errorInfo"></p>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn btn-primary" id="saveOrUpdate"></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <table id="table"
+                       data-toolbar="#toolbar"
+                       data-show-refresh="true"
+                       data-show-toggle="true"
+                       data-show-columns="true"
+                       data-show-export="true"
+                       data-detail-view="true"
+                       data-detail-formatter="detailFormatter"
+                       data-minimum-count-columns="2"
+                       data-show-pagination-switch="true"
+                       data-pagination="true"
+                       data-id-field="id"
+                       data-page-list="[10, 25, 50, 100, ALL]"
+                       data-show-footer="false"
+                       data-side-pagination="server"
+                       data-url="http://localhost:8080/doctor/findwithbs.do"
+                       data-response-handler="responseHandler"
+                       data-query-params="queryParams">
+                </table>
+			</div>
+		</div>
+
+
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery-ui.custom.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/jquery.uniform.js"></script>
+        <script src="js/select2.min.js"></script>
+        <script src="js/jquery.dataTables.min.js"></script>
+        <script src="js/unicorn.js"></script>
+        <script src="assets/bootstrap-table/src/bootstrap-table.js"></script>
+        <script src="assets/ga.js"></script>
+        <script src="js/myjs/mybootstraptable.js"></script>
+        <script src="js/myjs/converttime.js"></script>
+        <script>
+            var $table = $('#table'),
+                    selections = [];
+
+            function initTable() {
+                $table.bootstrapTable({
+                    height: getHeight(),
+                    columns: [
+                        [
+                            {
+                                field: 'state',
+                                checkbox: true,
+                                rowspan: 2,
+                                align: 'center',
+                                valign: 'middle'
+                            }, {
+                            title: '医生id',
+                            field: 'id',
+                            rowspan: 2,
+                            align: 'center',
+                            valign: 'middle',
+                            sortable: true
+                        }, {
+                            title: '医生详情',
+                            colspan: 14,
+                            align: 'center'
+                        }
+                        ],
+                        [
+                            {
+                                field: 'name',
+                                title: '医生姓名',
+                                sortable: true,
+                                editable: true,
+                                align: 'center'
+                            }, {
+                            field: 'identificationId',
+                            title: '身份证号',
+                            sortable: true,
+                            align: 'center',
+                            editable:true
+                        }, {
+                            field: 'phoneNumber',
+                            title: '手机号',
+                            sortable: true,
+                            editable: true,
+                            align: 'center'
+                        }, {
+                            field: 'phyQuaCerCode',
+                            title: '医师资格证书编码',
+                            sortable: true,
+                            editable: true,
+                            visible: false,
+                            align: 'center'
+                        }, {
+                            field: 'phyPraCerCode',
+                            title: '医师执业证书编码',
+                            sortable: true,
+                            editable: true,
+                            visible: false,
+                            align: 'center'
+                        },{
+                            field: 'title',
+                            title: '职称',
+                            sortable: true,
+                            editable: true,
+                            visible: false,
+                            align: 'center'
+                        },{
+                            field: 'titleName',
+                            title: '职称名字',
+                            sortable: true,
+                            editable: true,
+                            align: 'center'
+                        },{
+                            field: 'practiceType',
+                            title: '职业类别',
+                            sortable: true,
+                            editable: true,
+                            visible: false,
+                            align: 'center'
+                        },{
+                            field: 'practiceTypeName',
+                            title: '职业类别名字',
+                            sortable: true,
+                            editable: true,
+                            align: 'center'
+                        },{
+                            field: 'description',
+                            title: '医生简介',
+                            sortable: true,
+                            editable: true,
+                            visible: false,
+                            align: 'center'
+                        },{
+                            field: 'specialty',
+                            title: '擅长方向',
+                            sortable: true,
+                            editable: true,
+                            visible: false,
+                            align: 'center'
+                        },{
+                            field: 'comHosId',
+                            title: '所属机构id',
+                            sortable: true,
+                            editable: true,
+                            visible: false,
+                            align: 'center'
+                        },{
+                            field: 'comHosName',
+                            title: '所属机构',
+                            sortable: true,
+                            editable: true,
+                            align: 'center'
+                        },{
+                            field: 'createTime',
+                            title: '创建时间',
+                            formatter: convertTime,
+                            sortable: true,
+                            editable: true,
+                            align: 'center'
+                        }
+                        ]
+                    ]
+                });
+                // sometimes footer render error.
+                setTimeout(function () {
+                    $table.bootstrapTable('resetView');
+                }, 200);
+                $table.on('check.bs.table uncheck.bs.table ' +
+                'check-all.bs.table uncheck-all.bs.table', function () {
+                    $remove.prop('disabled', !$table.bootstrapTable('getSelections').length);
+
+
+                    // save your data, here just save the current page
+                    selections = getIdSelections();
+                    // push or splice the selections if you want to save all data selections
+                    if($table.bootstrapTable('getSelections').length==1){
+                        $update.prop("disabled", false);
+                        $updatePassword.prop("disabled",false)
+                    } else {
+                        $update.prop("disabled", true);
+                        $updatePassword.prop("disabled", true);
+                    }
+                });
+                $table.on('expand-row.bs.table', function (e, index, row, $detail) {
+                    if (index % 2 == 1) {
+                        $detail.html('Loading from ajax request...');
+                        $.get('LICENSE', function (res) {
+                            $detail.html(res.replace(/\n/g, '<br>'));
+                        });
+                    }
+                });
+                $table.on('all.bs.table', function (e, name, args) {
+                    console.log(name, args);
+                });
+                $remove.click(function () {
+                    var ids = getIdSelections();
+                    $table.bootstrapTable('remove', {
+                        field: 'id',
+                        values: ids
+                    });
+                    //删除服务器中的数据
+                    for(var id=0; id<ids.length; id++){
+                        $.ajax({
+                            url:"http://localhost:8080/doctor/delete.do?id="+ids[id],
+                            success:function(data){
+                                if(data.success==true){
+                                    console.log("delete doctor "+ids[id]+" success");
+                                }
+                                else{
+                                    alert("删除"+id+"失败");
+                                }
+                            }
+                        });
+                    }
+
+                    $remove.prop('disabled', true);
+                });
+
+
+                $(window).resize(function () {
+                    $table.bootstrapTable('resetView', {
+                        height: getHeight()
+                    });
+                });
+            }
+
+            function queryParams(params) {
+                params.comHosId = $comhosSelect1.val();
+                params.title = $('#titleSelect').val();
+                params.practiceType = $('#practiceTypeSelect').val();
+                return params;
+            }
+
+            function convertTime(value){
+                return getSmpFormatDateByLong(value, false);
+            }
+
+            $('#refresh').click(function(){
+                $table.bootstrapTable("refresh");
+            })
+
+            //初始化新增修改tab中的和搜索页的医院选择列表
+            $comhosSelect = $('#comhosSelect');
+            $comhosSelect1 = $('#comhosSelect1');
+
+            $(document).ready(function () {
+                appendCommunityHospitalSelect();
+                //拼接出社区选项
+                function appendCommunityHospitalSelect() {
+                    $.ajax({
+                        url: "http://localhost:8080/communityhospital/find.do?",
+                        success: function (data) {
+                            if (data.success == true) {
+                                var communityhospitals = data.data;
+                                $comhosSelect1.append("<option value='' selected = 'selected'>全部</option>");
+                                for (var i = 0; i < communityhospitals.length; i++) {
+                                    $comhosSelect.append("<option value='" + communityhospitals[i].id + "'>"
+                                        + communityhospitals[i].name + "</option>");
+                                    $comhosSelect1.append("<option value='" + communityhospitals[i].id + "'>"
+                                        + communityhospitals[i].name + "</option>");
+                                }
+                            }
+                            else {
+                                console.info("find communityhospital fail cause:" + data.message);
+                            }
+                        }
+                    });
+                }
+            })
+
+            //设置三个按钮事件
+            var $remove = $('#remove'),
+                    $add = $('#add'),
+                    $update = $('#update'),
+                    $updatePassword = $('#updatePassword');
+
+            var addOrUpdate; //0,新增; 1，修改
+
+            $add.click(function(){
+                $('#saveOrUpdate').text("新增");
+                $('#addOrUpdateLabel').text("新增医生");
+                $('#password').show();
+                addOrUpdate = 0;
+            })
+
+            $update.click(function(){
+                $('#saveOrUpdate').text("修改");
+                $('#addOrUpdateLabel').text("修改医生");
+                $('#password').hide();
+                var selection = $table.bootstrapTable('getSelections');
+                $("[name='name']").val(selection[0].name);
+                $("[name='identificationId']").val(selection[0].identificationId);
+                $("[name='phoneNumber']").val(selection[0].phoneNumber);
+                $("[name='phyQuaCerCode']").val(selection[0].phyQuaCerCode);
+                $("[name='phyPraCerCode']").val(selection[0].phyPraCerCode);
+                $("[name='description']").val(selection[0].description);
+                $("[name='specialty']").val(selection[0].specialty);
+                $("[name='createTime']").val(selection[0].createTime);
+                $("[name='title']").val(selection[0].title);
+                $("[name='practiceType']").val(selection[0].practiceType);
+                $comhosSelect.val(selection[0].comHosId);
+                addOrUpdate = 1;
+            })
+
+
+            $('#saveOrUpdate').click(function(){
+                var name = $("[name='name']").val();
+                var password = $("[name='password']").val();
+                var identificationId = $("[name='identificationId']").val();
+                var phoneNumber = $("[name='phoneNumber']").val();
+                var phyQuaCerCode = $("[name='phyQuaCerCode']").val();
+                var phyPraCerCode = $("[name='phyPraCerCode']").val();
+                var description = $("[name='description']").val();
+                var specialty = $("[name='specialty']").val();
+                var title = $("[name='title']").val();
+                var practiceType = $("[name='practiceType']").val();
+                var comHosId = $comhosSelect.val();
+                if(!valPhone(phoneNumber)){
+                    $('#errorInfo').text("请输入正确的手机号");
+                    return;
+                }
+                if(addOrUpdate == 0) {
+                    $.ajax({
+                        url: "http://localhost:8080/doctor/insert.do",
+                        type: "POST",
+                        data: {"name": name, "identificationId": identificationId, "phoneNumber": phoneNumber, "phyQuaCerCode": phyQuaCerCode,
+                            "phyPraCerCode": phyPraCerCode,"description": description,"specialty": specialty, "title": title, "practiceType": practiceType,
+                            "comHosId": comHosId, "password":password},
+                        success: function (data) {
+                            if (data.success == true) {
+                                window.location = "./manage-doctor.html";
+                            }
+                            else {
+                                $('#errorInfo').text(data.message);
+                                console.info("添加失败");
+                            }
+                        }
+                    });
+                } else{
+                    $.ajax({
+                        url: "http://localhost:8080/doctor/update.do",
+                        type: "POST",
+                        data: {"id":getIdSelections()[0],"name": name, "identificationId": identificationId, "phoneNumber": phoneNumber, "phyQuaCerCode": phyQuaCerCode,
+                            "phyPraCerCode": phyPraCerCode,"description": description,"specialty": specialty, "title": title, "practiceType": practiceType,
+                            "comHosId": comHosId},
+                        success: function (data) {
+                            if (data.success == true) {
+                                window.location = "./manage-doctor.html";
+                            }
+                            else {
+                                $('#errorInfo').text(data.message);
+                                console.info("修改失败");
+                            }
+                        }
+                    });
+                }
+
+                $('#updatePasswordButton').click(function(){
+                    if(!$('#newPassword').equalTo($('#newPassword2'))){
+                        $('#errorInfo2').text("两次密码不相同");
+                    }
+                    $.ajax({
+                        url: "http://localhost:8080/doctor/update.do?id="+getIdSelections()[0]+"&password="+$('#newPassword'),
+                        type: "POST",
+                        success: function(data){
+                            if(data.success){
+
+                            } else {
+                                alert(data.message);
+                            }
+                        }
+                    })
+                })
+
+                function valPhone(phoneNumber){
+                    if(!/^(13[0-9]|14[0-9]|15[0-9]|18[0-9])\d{8}$/i.test(phoneNumber))
+                    {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+            })
+        </script>
+	</body>
+</html>

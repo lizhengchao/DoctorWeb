@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>社区医疗辅助系统</title>
+		<meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+		<link rel="stylesheet" href="css/fullcalendar.css" />
+		<link rel="stylesheet" href="css/unicorn.main.css" />
+		<link rel="stylesheet" href="css/unicorn.grey.css" class="skin-color" />
+        <link rel="stylesheet" href="css/jquery-ui.css" />
+        <link rel="stylesheet" href="css/uniform.css" />
+        <link rel="stylesheet" href="css/select2.css" />
+        <link rel="stylesheet" href="assets/bootstrap-table/src/bootstrap-table.css">
+        <link rel="stylesheet" href="assets/examples.css">
+        <link rel="stylesheet" href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">
+    </head>
+	<body>
+
+
+		<div id="header">
+			<h1><a href="./dashboard.html">社区医疗辅助系统</a></h1>
+		</div>
+
+        <div id="user-nav" class="navbar navbar-inverse">
+            <ul class="nav btn-group">
+               <li class="btn btn-inverse dropdown" id="menu-messages"><a href="#" data-toggle="dropdown" data-target="#menu-messages" class="dropdown-toggle"><i class="icon icon-cog"></i> <span class="text">个人中心</span> <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="sAdd" title="" href="#">基本信息</a></li>
+                        <li><a class="sInbox" title="" href="#">密码</a></li>
+                        <li><a class="sOutbox" title="" href="#">个人头衔</a></li>
+                    </ul>
+                </li>
+                <li class="btn btn-inverse"><a title="" href="login.html"><i class="icon icon-share-alt"></i> <span class="text">注销</span></a></li>
+            </ul>
+        </div>
+
+		<div id="sidebar">
+			<ul>
+                <li><a href="manage-index.html"><i class="icon icon-th-list"></i> <span>社区医院管理</span></a>
+                <li><a href="manage-doctor.html"><i class="icon icon-th-list"></i> <span>医生管理</span></a></li>
+			</ul>
+
+		</div>
+
+		<div id="style-switcher">
+			<i class="icon-arrow-left icon-white"></i>
+			<span>Style:</span>
+			<a href="#grey" style="background-color: #555555;border-color: #aaaaaa;"></a>
+            <a href="#light-blue" style="background-color: #8399b0;"></a>
+			<a href="#blue" style="background-color: #2D2F57;"></a>
+			<a href="#red" style="background-color: #673232;"></a>
+            <a href="#red-green" style="background-image: url('img/demo/red-green.png');background-repeat: no-repeat;"></a>
+		</div>
+
+		<div id="content">
+			<div id="content-header">
+				<h1>社区医院管理</h1>
+				<!--<div class="btn-group">
+					<a class="btn btn-large tip-bottom" title="Manage Files"><i class="icon-file"></i></a>
+					<a class="btn btn-large tip-bottom" title="Manage Users"><i class="icon-user"></i></a>
+					<a class="btn btn-large tip-bottom" title="Manage Comments"><i class="icon-comment"></i><span class="label label-important">5</span></a>
+					<a class="btn btn-large tip-bottom" title="Manage Orders"><i class="icon-shopping-cart"></i></a>
+				</div>-->
+			</div>
+			<div id="breadcrumb">
+				<a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> 社区医院管理</a>
+			</div>
+			<div class="container-fluid">
+                <div id="toolbar">
+                    <button id="remove" class="btn btn-danger" disabled>
+                        <i class="glyphicon glyphicon-remove"></i> 删除
+                    </button>
+                    <button id="add" href="#myModal" data-toggle="modal" class="btn btn-success">
+                        <i class="glyphicon glyphicon-remove"></i> 新增
+                    </button>
+                    <button id="update" href="#myModal" data-toggle="modal" class="btn btn-warning" disabled>
+                        <i class="glyphicon glyphicon-remove"></i> 修改
+                    </button>
+                    <div id="myModal" class="modal hide">
+                        <div class="modal-header">
+                            <button data-dismiss="modal" class="close" type="button">×</button>
+                            <h3 id = "addOrUpdateLabel"></h3>
+                        </div>
+                        <div class="modal-body">
+                            <form action="#" class="form-horizontal">
+                                <div class="control-group">
+                                    <label class="control-label">医院名称</label>
+                                    <div class="controls">
+                                        <input type="text" name="name"/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">医院描述</label>
+                                    <div class="controls">
+                                        <input type="text" name="description" placeholder="描述不得多于512字"/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">医院地址</label>
+                                    <div class="controls">
+                                        <input type="text" name="address" placeholder="请精确到门牌号"/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">医院电话</label>
+                                    <div class="controls">
+                                        <input type="text" name="phoneNumber"/>
+                                        <p id="phoneNumberError" style="color: #882a25"></p>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn btn-primary" id="saveOrUpdate"></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <table id="table"
+                       data-toolbar="#toolbar"
+                       data-search="true"
+                       data-show-refresh="true"
+                       data-show-toggle="true"
+                       data-show-columns="true"
+                       data-show-export="true"
+                       data-detail-view="true"
+                       data-detail-formatter="detailFormatter"
+                       data-minimum-count-columns="2"
+                       data-show-pagination-switch="true"
+                       data-pagination="true"
+                       data-id-field="id"
+                       data-page-list="[10, 25, 50, 100, ALL]"
+                       data-show-footer="false"
+                       data-side-pagination="server"
+                       data-url="http://localhost:8080/communityhospital/findwithbs.do"
+                       data-response-handler="responseHandler">
+                    <!--data-url="http://mikepenz.com/jsfiddle/"-->
+                </table>
+			</div>
+		</div>
+
+
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery.ui.custom.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/jquery.uniform.js"></script>
+        <script src="js/select2.min.js"></script>
+        <script src="js/jquery.dataTables.min.js"></script>
+        <script src="js/unicorn.js"></script>
+        <script src="js/unicorn.tables.js"></script>
+        <script src="assets/bootstrap-table/src/bootstrap-table.js"></script>
+        <script src="assets/ga.js"></script>
+        <script>
+            var $table = $('#table'),
+                    $remove = $('#remove'),
+                    $add = $('#add'),
+                    $update = $('#update'),
+                    selections = [];
+
+            function initTable() {
+                $table.bootstrapTable({
+                    height: getHeight(),
+                    columns: [
+                        [
+                            {
+                                field: 'state',
+                                checkbox: true,
+                                rowspan: 2,
+                                align: 'center',
+                                valign: 'middle'
+                            }, {
+                            title: '医院id',
+                            field: 'id',
+                            rowspan: 2,
+                            align: 'center',
+                            valign: 'middle',
+                            sortable: true
+                        }, {
+                            title: '医院详情',
+                            colspan: 5,
+                            align: 'center'
+                        }
+                        ],
+                        [
+                            {
+                                field: 'name',
+                                title: '医院名称',
+                                sortable: true,
+                                editable: true,
+                                align: 'center'
+                            }, {
+                            field: 'description',
+                            title: '医院描述',
+                            sortable: true,
+                            align: 'center',
+                            editable:true
+                        }, {
+                            field: 'address',
+                            title: '医院地址',
+                            sortable: true,
+                            editable: true,
+                            align: 'center'
+                        },{
+                            field: 'phoneNumber',
+                            title: '医院号码',
+                            sortable: true,
+                            editable: true,
+                            align: 'center'
+                        },{
+                            field: 'createTime',
+                            title: '创建时间',
+                            sortable: true,
+                            editable: true,
+                            align: 'center'
+                        }
+                        ]
+                    ]
+                });
+                // sometimes footer render error.
+                setTimeout(function () {
+                    $table.bootstrapTable('resetView');
+                }, 200);
+                $table.on('check.bs.table uncheck.bs.table ' +
+                'check-all.bs.table uncheck-all.bs.table', function () {
+                    $remove.prop('disabled', !$table.bootstrapTable('getSelections').length);
+
+
+                    // save your data, here just save the current page
+                    selections = getIdSelections();
+                    // push or splice the selections if you want to save all data selections
+                    if($table.bootstrapTable('getSelections').length==1){
+                        $update.prop("disabled", false);
+                    } else {
+                        $update.prop("disabled", true);
+                    }
+                });
+                $table.on('expand-row.bs.table', function (e, index, row, $detail) {
+                    if (index % 2 == 1) {
+                        $detail.html('Loading from ajax request...');
+                        $.get('LICENSE', function (res) {
+                            $detail.html(res.replace(/\n/g, '<br>'));
+                        });
+                    }
+                });
+                $table.on('all.bs.table', function (e, name, args) {
+                    console.log(name, args);
+                });
+                $remove.click(function () {
+                    var ids = getIdSelections();
+                    $table.bootstrapTable('remove', {
+                        field: 'id',
+                        values: ids
+                    });
+                    //删除服务器中的数据
+                    for(var id=0; id<ids.length; id++){
+                        $.ajax({
+                            url:"http://localhost:8080/communityhospital/delete.do?id="+ids[id],
+                            success:function(data){
+                                if(data.success==true){
+                                    console.log("delete communityhospital "+ids[id]+" success");
+                                }
+                                else{
+                                    alert("删除"+id+"失败");
+                                }
+                            }
+                        });
+                    }
+
+                    $remove.prop('disabled', true);
+                });
+
+
+                $(window).resize(function () {
+                    $table.bootstrapTable('resetView', {
+                        height: getHeight()
+                    });
+                });
+            }
+
+            function getIdSelections() {
+                return $.map($table.bootstrapTable('getSelections'), function (row) {
+                    return row.id
+                });
+            }
+
+            function responseHandler(res) {
+                $.each(res.rows, function (i, row) {
+                    row.state = $.inArray(row.id, selections) !== -1;
+                });
+                return res;
+            }
+
+            function detailFormatter(index, row) {
+                var html = [];
+                $.each(row, function (key, value) {
+                    html.push('<p><b>' + key + ':</b> ' + value + '</p>');
+                });
+                return html.join('');
+            }
+
+            function inputFormatter(value) {
+                var checked = value ? 'checked' : '';
+                return '<input type="checkbox" ' + checked + ' />';
+            }
+
+            window.inputEvents = {
+                'change :checkbox': function (e, value, row, index) {
+                    row.selling = $(e.target).prop('checked');
+                    $table.bootstrapTable('updateRow', {
+                        index: index,
+                        row: row
+                    });
+                }
+            };
+
+
+            function getHeight() {
+                return $(window).height() - $('h1').outerHeight(true);
+            }
+
+            $(function () {
+                var scripts = [
+                            location.search.substring(1) || 'assets/bootstrap-table/src/bootstrap-table.js',
+                            'assets/bootstrap-table/src/extensions/export/bootstrap-table-export.js',
+                            'http://rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js',
+                            'assets/bootstrap-table/src/extensions/editable/bootstrap-table-editable.js',
+                            'http://rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/js/bootstrap-editable.js'
+                        ],
+                        eachSeries = function (arr, iterator, callback) {
+                            callback = callback || function () {};
+                            if (!arr.length) {
+                                return callback();
+                            }
+                            var completed = 0;
+                            var iterate = function () {
+                                iterator(arr[completed], function (err) {
+                                    if (err) {
+                                        callback(err);
+                                        callback = function () {};
+                                    }
+                                    else {
+                                        completed += 1;
+                                        if (completed >= arr.length) {
+                                            callback(null);
+                                        }
+                                        else {
+                                            iterate();
+                                        }
+                                    }
+                                });
+                            };
+                            iterate();
+                        };
+
+                eachSeries(scripts, getScript, initTable);
+            });
+
+            function getScript(url, callback) {
+                var head = document.getElementsByTagName('head')[0];
+                var script = document.createElement('script');
+                script.src = url;
+
+                var done = false;
+                // Attach handlers for all browsers
+                script.onload = script.onreadystatechange = function() {
+                    if (!done && (!this.readyState ||
+                            this.readyState == 'loaded' || this.readyState == 'complete')) {
+                        done = true;
+                        if (callback)
+                            callback();
+
+                        // Handle memory leak in IE
+                        script.onload = script.onreadystatechange = null;
+                    }
+                };
+
+                head.appendChild(script);
+
+                // We handle everything using the script element injection
+                return undefined;
+            }
+
+            var addOrUpdate; //0,新增; 1，修改
+
+            $add.click(function(){
+                $('#saveOrUpdate').text("新增");
+                $('#addOrUpdateLabel').text("新增社区医院");
+                addOrUpdate = 0;
+            })
+
+            $update.click(function(){
+                $('#saveOrUpdate').text("修改");
+                $('#addOrUpdateLabel').text("修改社区医院");
+                var selection = $table.bootstrapTable('getSelections');
+                $("[name='name']").val(selection[0].name);
+                $("[name='description']").val(selection[0].description);
+                $("[name='address']").val(selection[0].address);
+                $("[name='phoneNumber']").val(selection[0].phoneNumber);
+                addOrUpdate = 1;
+            })
+
+
+            $('#saveOrUpdate').click(function(){
+                var name = $("[name='name']").val();
+                var des = $("[name='description']").val();
+                var address = $("[name='address']").val();
+                var phoneNumber = $("[name='phoneNumber']").val();
+                if(!valPhone(phoneNumber)){
+                    $('#phoneNumberError').text("请输入正确的手机号");
+                    return;
+                }
+                if(addOrUpdate == 0) {
+                    $.ajax({
+                        url: "http://localhost:8080/communityhospital/insert.do",
+                        type: "POST",
+                        data: {"name": name, "description": des, "address": address, "phoneNumber": phoneNumber},
+                        success: function (data) {
+                            if (data.success == true) {
+                                window.location = "./manage-index.html";
+                            }
+                            else {
+                                $('#phoneNumberError').text(data.message);
+                                console.info("添加失败");
+                            }
+                        }
+                    });
+                } else{
+                    $.ajax({
+                        url: "http://localhost:8080/communityhospital/update.do",
+                        type: "POST",
+                        data: {"id":getIdSelections()[0],"name": name, "description": des, "address": address, "phoneNumber": phoneNumber},
+                        success: function (data) {
+                            if (data.success == true) {
+                                window.location = "./manage-index.html";
+                            }
+                            else {
+                                $('#phoneNumberError').text(data.message);
+                                console.info("修改失败");
+                            }
+                        }
+                    });
+                }
+
+                function valPhone(phoneNumber){
+                    if(!/^(13[0-9]|14[0-9]|15[0-9]|18[0-9])\d{8}$/i.test(phoneNumber))
+                    {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+            })
+        </script>
+	</body>
+</html>

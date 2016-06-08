@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doctor.doctor">
+    <resultMap id="result_map" type="com.doctor.doctor.dto.DoctorDTO">
+        <id column="id" property="id"/>
+        <result property="name" column="name"/>
+        <result property="identificationId" column="identificationId"/>
+        <result property="phoneNumber" column="phoneNumber"/>
+        <result property="phyQuaCerCode" column="phyQuaCerCode"/>
+        <result property="phyPraCerCode" column="phyPraCerCode"/>
+        <result property="title" column="title"/>
+        <result property="practiceType" column="practiceType"/>
+        <result property="description" column="description"/>
+        <result property="specialty" column="specialty"/>
+        <result property="comHosId" column="comHosId"/>
+        <result property="createTime" column="createTime"/>
+        <result property="modifyTime" column="modifyTime"/>
+    </resultMap>
+
+    <!-- 数据库字段 -->
+    <sql id="columns">
+        id, name, identificationId, phoneNumber, phyQuaCerCode, phyPraCerCode, title, practiceType,
+        description,specialty, comHosId, createTime, modifyTime
+    </sql>
+
+    <!-- 查询条件 -->
+    <sql id="conditions">
+        <where>
+            <choose>
+                <when test="id != null">and id = #{id}</when>
+                <otherwise>
+                    <if test="name != null">and name = #{name}</if>
+                    <if test="identificationId != null">and identificationId = #{identificationId}</if>
+                    <if test="phoneNumber != null">and phoneNumber = #{phoneNumber}</if>
+                    <if test="title != null">and title = #{title}</if>
+                    <if test="practiceType != null">and practiceType = #{practiceType}</if>
+                    <if test="comHosId != null">and comHosId = #{comHosId}</if>
+                    <if test="vagueValue != null">and (name like '%${vagueValue}%'
+                    or identificationId LIKE '%${vagueValue}%' or phoneNumber like '%${vagueValue}%'</if>
+                </otherwise>
+            </choose>
+        </where>
+    </sql>
+
+    <!-- 查询结果集 -->
+    <select id="find" resultMap="result_map"
+            parameterType="com.doctor.doctor.dto.DoctorQuery">
+        select
+        <include refid="columns"/>
+        from doctor
+        <include refid="conditions"/>
+        ORDER BY #{sort, jdbcType=VARCHAR} #{order, jdbcType=VARCHAR}
+        <if test="paging == true">
+            limit #{pageIndex, jdbcType=INTEGER},#{pageSize, jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <!-- 查询某条记录 -->
+    <select id="get" resultMap="result_map" parameterType="com.doctor.doctor.dto.DoctorQuery">
+        select
+        <include refid="columns"/>
+        from doctor
+        <include refid="conditions"/>
+        limit 1
+    </select>
+
+    <!-- 统计查询结果数量 -->
+    <select id="count" resultType="int" parameterType="com.doctor.doctor.dto.DoctorQuery">
+        select count(*) from doctor
+        <include refid="conditions"/>
+    </select>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="com.doctor.doctor.dto.DoctorQuery">
+        delete from doctor where id = #{id}
+    </delete>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.doctor.doctor.dto.DoctorDTO">
+        insert into
+        doctor
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                name,
+            </if>
+            <if test="identificationId != null">
+                identificationId,
+            </if>
+            <if test="phoneNumber != null">
+                phoneNumber,
+            </if>
+            <if test="phyQuaCerCode != null">
+                phyQuaCerCode,
+            </if>
+            <if test="phyPraCerCode != null">
+                phyPraCerCode,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="practiceType != null">
+                practiceType,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="specialty != null">
+                specialty,
+            </if>
+            <if test="comHosId != null">
+                comHosId,
+            </if>
+            createTime,
+            modifyTime,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name, jdbcType=VARCHAR},
+            </if>
+            <if test="identificationId != null">
+                #{identificationId, jdbcType=INTEGER},
+            </if>
+            <if test="phoneNumber != null">
+                #{phoneNumber, jdbcType=INTEGER},
+            </if>
+            <if test="phyQuaCerCode != null">
+                #{phyQuaCerCode, jdbcType=VARCHAR},
+            </if>
+            <if test="phyPraCerCode != null">
+                #{phyPraCerCode, jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                #{title, jdbcType=INTEGER},
+            </if>
+            <if test="practiceType != null">
+                #{practiceType, jdbcType=INTEGER},
+            </if>
+            <if test="description != null">
+                #{description, jdbcType=VARCHAR},
+            </if>
+            <if test="specialty != null">
+                #{specialty, jdbcType=VARCHAR},
+            </if>
+            <if test="comHosId != null">
+                #{comHosId, jdbcType=INTEGER},
+            </if>
+            now(),
+            now(),
+        </trim>
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.doctor.doctor.dto.DoctorDTO">
+        UPDATE doctor
+        <set>
+            <if test="name != null">
+                name = #{name, jdbcType=VARCHAR},
+            </if>
+            <if test="identificationId != null">
+                identificationId = #{identificationId, jdbcType=INTEGER},
+            </if>
+            <if test="phoneNumber != null">
+                phoneNumber = #{phoneNumber, jdbcType=INTEGER},
+            </if>
+            <if test="phyQuaCerCode != null">
+                phyQuaCerCode = #{phyQuaCerCode, jdbcType=VARCHAR},
+            </if>
+            <if test="phyPraCerCode != null">
+                phyPraCerCode = #{phyPraCerCode, jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                title = #{title, jdbcType=INTEGER},
+            </if>
+            <if test="practiceType != null">
+                practiceType = #{practiceType, jdbcType=INTEGER},
+            </if>
+            <if test="description != null">
+                description = #{description, jdbcType=VARCHAR},
+            </if>
+            <if test="specialty != null">
+                specialty = #{specialty, jdbcType=VARCHAR},
+            </if>
+            <if test="comHosId != null">
+                comHosId = #{comHosId, jdbcType=INTEGER},
+            </if>
+            modifyTime = now()
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+</mapper>

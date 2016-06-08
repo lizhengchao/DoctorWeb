@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doctor.community_hospital">
+    <resultMap id="result_map" type="com.doctor.community_hospital.dto.CommunityHospitalDTO" >
+        <id column="id" property="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="address" column="address"/>
+        <result property="phoneNumber" column="phoneNumber"/>
+        <result property="createTime" column="createTime"/>
+        <result property="modifyTime" column="modifyTime"/>
+    </resultMap>
+
+    <!-- 数据库字段 -->
+    <sql id="columns">
+        id, name, description, address, phoneNumber, createTime, modifyTime
+    </sql>
+
+    <!-- 查询条件 -->
+    <sql id="conditions">
+        <where>
+            <choose>
+                <when test="id != null">and id = #{id}</when>
+                <otherwise>
+                    <if test="name != null"> and name = #{name}</if>
+                    <if test="vagueValue != null">and (name like '%${vagueValue}%'
+                        or description LIKE '%${vagueValue}%' or address like '%${vagueValue}%'
+                        or phoneNumber like '%${vagueValue}%') </if>
+                </otherwise>
+            </choose>
+        </where>
+    </sql>
+
+    <!-- 查询结果集 -->
+    <select id="find" resultMap="result_map"
+            parameterType="com.doctor.community_hospital.dto.CommunityHospitalQuery">
+        select
+        <include refid="columns"/>
+        from community_hospital
+        <include refid="conditions"/>
+        ORDER BY #{sort, jdbcType=VARCHAR}  #{order, jdbcType=VARCHAR}
+        <if test="paging == true">
+            limit #{pageIndex, jdbcType=INTEGER},#{pageSize, jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <!-- 查询某条记录 -->
+    <select id="get" resultMap="result_map" parameterType="com.doctor.community_hospital.dto.CommunityHospitalQuery">
+        select
+        <include refid="columns"/>
+        from community_hospital
+        <include refid="conditions"/>
+        limit 1
+    </select>
+
+    <!-- 统计查询结果数量 -->
+    <select id="count" resultType="int" parameterType="com.doctor.community_hospital.dto.CommunityHospitalQuery">
+        select count(*) from community_hospital
+        <include refid="conditions"/>
+    </select>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="com.doctor.community_hospital.dto.CommunityHospitalQuery">
+        delete from community_hospital where id = #{id}
+    </delete>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.doctor.community_hospital.dto.CommunityHospitalDTO">
+        insert into
+        community_hospital
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                name,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="phoneNumber != null">
+                phoneNumber,
+            </if>
+            createTime,
+            modifyTime,
+        </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name, jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description, jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address, jdbcType=VARCHAR},
+            </if>
+            <if test="phoneNumber != null">
+                #{phoneNumber, jdbcType=INTEGER},
+            </if>
+            now(),
+            now(),
+        </trim>
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.doctor.community_hospital.dto.CommunityHospitalDTO">
+        UPDATE community_hospital
+        <set>
+            <if test="name != null">
+                name = #{name, jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description, jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address, jdbcType=VARCHAR},
+            </if>
+            <if test="phoneNumber != null">
+                phoneNumber = #{phoneNumber, jdbcType=INTEGER},
+            </if>
+            modifyTime = now()
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+</mapper>

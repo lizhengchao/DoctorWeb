@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Not Found</title>
+	<link rel="stylesheet" type="text/css" th:href="${basePath} + '/assets/statics/css/common.css'"/>
+</head>
+
+<style>
+	body {
+		padding: 0;
+		margin: 0;
+	}
+	.container {
+		background-image: url( th:src="${basePath} + '/assets/statics/img/bg_404.jpg'");
+		min-height: 600px;
+		height: 100%
+	}
+
+	.cor-w {
+		color: #fff
+	}
+
+	.return-btn {
+		border: 3px solid #fff;
+		border-radius: 4px
+	}
+
+	.return-btn:hover {
+		background-color: rgba(214,214,214,0.40);
+	}
+
+	u,.stretch {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%
+	}
+
+</style>
+<body>
+<div class="container">
+	<div class="m-a w-500px ta-c p-25px">
+		<div class="ta-c pt-20px">
+			<img th:src="${bassPath} + '/assets/statics/img/404Center.jpg'" />
+		</div>
+
+		<div class="mt-30px cor-w fz-26px fw-b">
+			<span>你访问的页面去月球旅行了...</span>
+		</div>
+
+		<div class="return-btn d-ib p-10px mt-60px w-200px h-35px fz-26px cor-w cur-p pos-r">
+			<span>返回登录 >></span>
+			<a href="#"><u></u></a>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

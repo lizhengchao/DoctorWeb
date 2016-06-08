@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>社区医疗辅助系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="css/fullcalendar.css"/>
+    <link rel="stylesheet" href="css/jquery-ui.css"/>
+    <link rel="stylesheet" href="css/uniform.css"/>
+    <link rel="stylesheet" href="css/select2.css"/>
+    <link rel="stylesheet" href="assets/bootstrap-table/src/bootstrap-table.css">
+    <link rel="stylesheet" href="assets/examples.css">
+    <link rel="stylesheet" href="css/my.css">
+    <link rel="stylesheet" href="css/main.min.css">
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="modal fade bs-example-modal-sm" role="dialog" aria-labelledby="loginModalLabel" id="loginModal">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="loginModalLabel">登录</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <!--todo-->
+                    <!--增加手机号登录-->
+                    <input type="text" class="form-control" id="modalLoginName" placeholder="昵称">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="modalLoginPassword" placeholder="密码">
+                    <p id="loginModalErrorInfo" style="color: #882a25; margin-top: 10px"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a role="button" href="javascript:login();" class="btn btn-primary" data-loading-text="验证中...">登录</a>
+                <div class="modal-footer-tips">
+                    <label style="float:left;"><input type="checkbox" id="chk-rmb" value="rmb" checked="checked"> 下次自动登陆</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-sm" role="dialog" aria-labelledby="registerModalLabel" id="registerModal">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="registerModalLabel">注册</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="modalRegisterName" placeholder="昵称">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="modalRegisterPassword" placeholder="密码(不少于6位)">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="modalReRegisterPassword" placeholder="请再次输入密码">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a role="button" href="javascript:register();" class="btn btn-primary" data-loading-text="注册中...">注册</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">社区医疗辅助系统</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="navbar-menu">
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a id="nameLi" style="color: #3c763d" href="#"></a></li>
+                    <li><a href="#">查找医院、医生</a></li>
+                    <li id="loginLi"><a href="#" data-toggle="modal" data-target="#loginModal">登录</a></li>
+                    <li id="registerLi"><a href="#" data-toggle="modal" data-target="#registerModal">注册</a></li>
+                    <li id="serviceLi" style="display: none"><a href="my/message.html">个人服务</a></li>
+                    <li id="infoLi" style="display: none"><a href="my/my-info.html">个人信息</a></li>
+                    <li id="logoutLi" style="display: none"><a role="button" href="javascript:logout();">登出</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+<div></div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-ui.custom.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.uniform.js"></script>
+<script src="js/select2.min.js"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="assets/bootstrap-table/src/bootstrap-table.js"></script>
+<script src="assets/ga.js"></script>
+<script src="js/myjs/converttime.js"></script>
+<script src="js/myjs/residentjs.js"></script>
+<script>
+    var userId;
+    var userName;
+
+    function login(){
+        var name = $('#modalLoginName').val();
+        var password = $('#modalLoginPassword').val();
+        //是否保留登录状态
+        var isSaveInfo;
+        if($('#chk-rmb').attr('checked') =='checked'){
+            isSaveInfo = 1;
+        } else {
+            isSaveInfo = 0;
+        }
+        $.ajax({
+            url: "http://localhost:8080/user/login.do?userType="+2+"&nickname="+name+"&password="+password+"&isSaveInfo="+isSaveInfo,
+            type: "GET",
+            success: function(data){
+                if(data.success){
+                    sessionStorage.setItem("comHosId", data.data.comhisid);
+                    sessionStorage.setItem("comHosName", data.data.comhisname);
+                    window.location = "./resident-index.html"
+
+                } else {
+                    $('#loginModalErrorInfo').text(data.message);
+                }
+            }
+        })
+    }
+
+    function logout(){
+        $.ajax({
+            url: "http://localhost:8080/user/logout.do?",
+            type: "GET",
+            success: function(data){
+                if(data.success){
+                    sessionStorage.removeItem("userId");
+                    sessionStorage.removeItem("userName");
+                    sessionStorage.removeItem("residentId");
+                    window.location = "./resident-index.html"
+
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
+    }
+
+    function register(){
+
+    }
+</script>
+</body>
+</html>

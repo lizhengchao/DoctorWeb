@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>社区医疗辅助系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="../css/fullcalendar.css"/>
+    <link rel="stylesheet" href="../css/jquery-ui.css"/>
+    <link rel="stylesheet" href="../css/uniform.css"/>
+    <link rel="stylesheet" href="../css/select2.css"/>
+    <link rel="stylesheet" href="../assets/bootstrap-table/src/bootstrap-table.css">
+    <link rel="stylesheet" href="../assets/examples.css">
+    <link rel="stylesheet" href="../css/my.css">
+    <link rel="stylesheet" href="../css/main.min.css">
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="modal fade bs-example-mod" role="dialog" aria-labelledby="updatePWDModalLabel" id="updatePWDModal">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="width: 440px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="updatePWDModalLabel">修改密码</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-10 ml-cont-outer">
+                    <form class="my-info-form" id="pwd-info-form">
+                        <div class="alert alert-danger alert-dismissible fade in" role="alert" id="pwd-info-err" style="display: none;">
+                            <span id="pwd-info-err-cont"></span>
+                        </div>
+                        <div class="form-group has-error">
+                            <label for="oldPwd">原密码</label>
+                            <input type="password" class="form-control" id="oldPwd" placeholder="原密码">
+                        </div>
+                        <div class="form-group has-error">
+                            <label for="newPwd">新密码</label>
+                            <input type="password" class="form-control" id="newPwd" placeholder="新密码，至少6位">
+                        </div>
+                        <div class="form-group has-error">
+                            <label for="rePwd">重新输入新密码</label>
+                            <input type="password" class="form-control" id="rePwd" placeholder="新密码，至少6位">
+                        </div>
+                        <a role="button" class="btn btn-primary" href="javascript:savePwd();">保存</a>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">社区医疗辅助系统</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="navbar-menu">
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a id="nameLi" style="color: #3c763d" href="#"></a></li>
+                    <li><a href="#">查找医院、医生</a></li>
+                    <li id="loginLi"><a href="#" data-toggle="modal" data-target="#loginModal">登录</a></li>
+                    <li id="registerLi"><a href="#" data-toggle="modal" data-target="#registerModal">注册</a></li>
+                    <li id="serviceLi" style="display: none"><a href="message.html">个人服务</a></li>
+                    <li id="infoLi" style="display: none"><a href="my-info.html">个人信息</a></li>
+                    <li id="logoutLi" style="display: none"><a role="button" href="javascript:logout();">登出</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container index-body">
+    <h4>个人信息</h4>
+    <div class="row depot-outer">
+        <div class="col-sm-2 my-list-outer">
+            <ul class="row depot-list-left my-list">
+                <li><a href="my-info.html" class="sel">
+                    <i class="fa fa-file-text-o fa-fw"></i> 我的资料</a>
+                </li>
+                <li class="my-split"></li>
+                <li><a href="binding-hospital.html">
+                    <i class="fa fa-heart fa-fw"></i> 绑定社区医院</a>
+                </li>
+                <li class="my-split">
+                </li>
+                <li><a href="my-medical-reocrd.html">
+                    <i class="fa fa-user-plus fa-fw"></i> 我的就诊</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-10 ml-cont-outer">
+            <form class="my-info-form" id="my-info-form">
+                <div id="mail-tips" style="display:none;" class="alert alert-danger alert-dismissible fade in" role="alert"></div>
+
+                <div class="alert alert-danger alert-dismissible fade in" role="alert" id="my-info-err">
+                    <span id="my-info-err-cont"></span>
+                </div>
+                <div class="form-group">
+                    <label for="nickname">昵称</label>
+                    <input type="text" class="form-control" id="nickname" placeholder="昵称">
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="text" class="form-control" id="password" readonly="true">
+                    <a href="#" data-toggle="modal" data-target="#updatePWDModal" style=" color: #3169b0; text-decoration: underline; border: none;">修改密码</a>
+                </div>
+                <div class="form-group">
+                    <label for="identificationId">身份证号</label>
+                    <input type="text" class="form-control" id="identificationId"  readonly="true">
+                    <a href="binding-hospital.html" id="identificationIdInfo" hidden="hidden" style=" color: #3169b0; text-decoration: underline; border: none;">您还未绑定社区医院号，前往绑定</a>
+                </div>
+
+                <a role="button" class="btn btn-primary" href="javascript:saveInfo();">保存</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/jquery-ui.custom.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/jquery.uniform.js"></script>
+<script src="../js/select2.min.js"></script>
+<script src="../js/jquery.dataTables.min.js"></script>
+<script src="../assets/bootstrap-table/src/bootstrap-table.js"></script>
+<script src="../assets/ga.js"></script>
+<script src="../js/myjs/converttime.js"></script>
+<script src="../js/myjs/residentjs.js"></script>
+<script>
+    var userId;
+    var userName;
+
+    var password;
+    var identificationId;
+
+    $(document).ready(function () {
+        userId = sessionStorage.getItem("userId");
+        userName = sessionStorage.getItem("userName");
+
+        $('#nickname').val(userName);
+        //获取密码和身份证号
+        $.ajax({
+            url: "http://localhost:8080/user/find.do?userId="+userId,
+            type: "GET",
+            success: function(data){
+                if(data.success){
+                    password = data.data[0].password;
+                    identificationId = data.data[0].identificationId;
+                    $('#password').val(password);
+                    if(identificationId == null || identificationId == ""){
+                        $('#identificationIdInfo').show();
+                    } else {
+                        $('#identificationId').val(identificationId);
+                    }
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
+    })
+
+    function savePwd(){
+        var oldPwd = $('#oldPwd').val();
+        var newPwd = $('#newPwd').val();
+        var rePwd = $('#rePwd').val();
+        if(!verifyPwd(oldPwd, newPwd, rePwd)){
+            $('#pwd-info-err').css("display", "block");
+            return;
+        } else {
+            $.ajax({
+                url: "http://localhost:8080/user/updatePwd.do?oldPassword="+oldPwd + "&newPassword="+newPwd,
+                type: "POST",
+                success: function(data){
+                    if(data.success){
+                        alert("保存成功");
+                        $('#updatePWDModal').hide();
+                        $('#password').val(newPwd);
+                    } else {
+                        $('#pwd-info-err').css("display", "block");
+                        $('#pwd-info-err-cont').text(data.message);
+                    }
+                }
+            })
+        }
+    }
+
+    function verifyPwd(oldPwd, newPwd, rePwd){
+        if(oldPwd.length<=6){
+            $('#pwd-info-err-cont').text("原密码错误");
+            return false;
+        }
+        if(newPwd != rePwd){
+            $('#pwd-info-err-cont').text("请输入两次相同的密码");
+            return false;
+        }
+        if(newPwd.length<=6 || rePwd.length<=6){
+            $('#pwd-info-err-cont').text("两次密码都应大于6位");
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>

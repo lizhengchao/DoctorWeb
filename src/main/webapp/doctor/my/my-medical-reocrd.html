@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body><!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>社区医疗辅助系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="../css/fullcalendar.css"/>
+    <link rel="stylesheet" href="../css/jquery-ui.css"/>
+    <link rel="stylesheet" href="../css/uniform.css"/>
+    <link rel="stylesheet" href="../css/select2.css"/>
+    <link rel="stylesheet" href="../assets/bootstrap-table/src/bootstrap-table.css">
+    <link rel="stylesheet" href="../assets/examples.css">
+    <link rel="stylesheet" href="../css/my.css">
+    <link rel="stylesheet" href="../css/main.min.css">
+    <style>
+        /*新的bootstrap中.modal样式不适用，因而在此处强制写死*/
+
+        .modal {
+            z-index: 99999 !important;
+            position: fixed;
+            top: 10%;
+            left: 50%;
+            bottom: 40%;;
+            width: 560px;
+            margin-left: -280px;
+            background-color: #fff;
+            box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+            background-clip: padding-box;
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+        }
+
+        .mytext{
+            height: 30px;
+            width: 150px;
+            display: block;
+            margin-top: 10px
+        }
+        .mylabel{
+            float: left;
+            margin-top: 10px
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">社区医疗辅助系统</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="navbar-menu">
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a id="nameLi" style="color: #3c763d" href="#"></a></li>
+                    <li><a href="#">查找医院、医生</a></li>
+                    <li id="loginLi"><a href="#" data-toggle="modal" data-target="#loginModal">登录</a></li>
+                    <li id="registerLi"><a href="#" data-toggle="modal" data-target="#registerModal">注册</a></li>
+                    <li id="serviceLi" style="display: none"><a href="message.html">个人服务</a></li>
+                    <li id="infoLi" style="display: none"><a href="my-info.html">个人信息</a></li>
+                    <li id="logoutLi" style="display: none"><a role="button" href="javascript:logout();">登出</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container index-body">
+    <h4>个人信息</h4>
+    <div class="row depot-outer">
+        <div class="col-sm-2 my-list-outer">
+            <ul class="row depot-list-left my-list">
+                <li><a href="my-info.html">
+                    <i class="fa fa-file-text-o fa-fw"></i> 我的资料</a>
+                </li>
+                <li class="my-split"></li>
+                <li><a href="binding-hospital.html">
+                    <i class="fa fa-heart fa-fw"></i> 绑定社区医院</a>
+                </li>
+                <li class="my-split">
+                </li>
+                <li><a href="my-medical-reocrd.html" class="sel">
+                    <i class="fa fa-user-plus fa-fw"></i> 我的就诊</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-10 ml-cont-outer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="mylabel">开始时间</label><input class="mytext" type="date" id="startTime"/>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="mylabel">结束时间</label><input class="mytext" type="date" id="endTime"/>
+                    </div>
+                    <div class="col-md-1">
+                    <button style="float: left; margin-top: 30px" class="btn btn-primary"id = "search">查找</button>
+                </div>
+                </div>
+                <div id="toolbar">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <button id="medicalDetail" href="#medicalDetailModal" data-toggle="modal" class="btn btn-primary" disabled>查看病历详情</button>
+                        </div>
+                        <div class="col-md-4">
+                            <button id="medicationDetail" href="#medicationDetailModal" data-toggle="modal" class="btn btn-primary" disabled>查看就诊详情</button>
+                        </div>
+                        <div class="col-md-4">
+                            <button id="heaDataDetail" href="#heaDataModal" data-toggle="modal" class="btn btn-primary" disabled>查看体检详情</button>
+                        </div>
+
+                        <div id="medicalDetailModal" class="modal">
+                            <div class="modal-header">
+                                <button data-dismiss="modal" class="close" type="button">×</button>
+                                <h3>病历详情</h3>
+                            </div>
+                            <div class="modal-body">
+                                <ul class="list-unstyled">
+                                    <li>居民姓名: <mark id="resNameShow"></mark></li>
+                                    <li>&nbsp;</li>
+                                    <li>居民主诉: <mark id="chiefComplaint"></mark></li>
+                                    <li>&nbsp;</li>
+                                    <li>医生姓名: <mark id="docName"></mark></li>
+                                    <li>&nbsp;</li>
+                                    <li>医疗建议: <mark id="suggest"></mark></li>
+                                    <li>&nbsp;</li>
+                                    <li>就诊时间: <mark id="createTime"></mark></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="medicationDetailModal" class="modal">
+                            <div class="modal-header">
+                                <button data-dismiss="modal" class="close" type="button">×</button>
+                                <h3>用药详情</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="bs-example" data-example-id="unstyled-list">
+                                    <ul class="list-unstyled" id="medicationDetailShow">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="heaDataModal" class="modal">
+                            <div class="modal-header">
+                                <button data-dismiss="modal" class="close" type="button">×</button>
+                                <h3>体检详情</h3>
+                            </div>
+                            <div class="modal-body">
+                                <ul id="heaDataShow" class="list-unstyled">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table id="table"
+                       data-toggle="table"
+                       data-toolbar="#toolbar"
+                       data-height="460"
+                       data-pagination="true"
+                       data-side-pagination="server"
+                       data-url="http://localhost:8080/medicalrecord/findwithbs.do"
+                       data-query-params="queryParams" >
+                    <thead>
+                    <tr>
+                        <th data-field="state" data-checkbox="true"></th>
+                        <th data-field="id" data-visible="false"></th>
+                        <th data-field="doctorName">就诊医生姓名</th>
+                        <th data-field="medicationRecId" data-visible="false">用药记录id</th>
+                        <th data-field="heaDataId" data-visible="false">健康体检id</th>
+                        <th data-field="createTime" data-formatter="convertTime">就诊时间</th>
+                        <th data-field="chiefComplaint" data-visible="false">主诉</th>
+                        <th data-field="suggest" data-visible="false">医疗建议</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/jquery-ui.custom.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/jquery.uniform.js"></script>
+<script src="../js/select2.min.js"></script>
+<script src="../js/jquery.dataTables.min.js"></script>
+<script src="../assets/bootstrap-table/src/bootstrap-table.js"></script>
+<script src="../assets/ga.js"></script>
+<script src="../js/myjs/converttime.js"></script>
+<script src="../js/myjs/residentjs.js"></script>
+<script>
+    var userId;
+    var userName;
+
+    function convertTime(value){
+        return getSmpFormatDateByLong(value, false);
+    }
+
+    var $resName = $('#resName');
+    var $startTime = $('#startTime');
+    var $endTime = $('#endTime');
+    function queryParams(params) {
+        params.resId = sessionStorage.getItem("residentId");
+        params.startTime = $startTime.val();
+        params.endTime = $endTime.val();
+        return params;
+    }
+
+    $table = $('#table');
+
+    //table选择事件，此处表示上方三个button可点击
+    $table.on('check.bs.table uncheck.bs.table ' +
+    'check-all.bs.table uncheck-all.bs.table', function () {
+        if ($table.bootstrapTable('getSelections').length == 1) {
+            $('#medicalDetail').prop("disabled", false);
+            $('#medicationDetail').prop("disabled", false);
+            $('#heaDataDetail').prop("disabled", false);
+        } else {
+            $('#medicalDetail').prop("disabled", true);
+            $('#medicationDetail').prop("disabled", true);
+            $('#heaDataDetail').prop("disabled", true);
+        }
+    });
+
+    //页面上方的四个button
+    $('#search').click(function(){
+        $table.bootstrapTable("refresh")
+    })
+
+    $('#medicalDetail').click(function(){
+        $('#resNameShow').text($table.bootstrapTable('getSelections')[0].resName);
+        $('#chiefComplaint').text($table.bootstrapTable('getSelections')[0].chiefComplaint);
+        $('#docName').text($table.bootstrapTable('getSelections')[0].doctorName);
+        $('#suggest').text($table.bootstrapTable('getSelections')[0].suggest);
+        $('#createTime').text(getSmpFormatDateByLong($table.bootstrapTable('getSelections')[0].createTime,false));
+    })
+
+    $('#medicationDetail').click(function(){
+        $.ajax({
+            url: "http://localhost:8080/medicationrecord/find.do?medicalRecId="+$table.bootstrapTable('getSelections')[0].id,
+            type: "GET",
+            success: function(data){
+                if(data.success){
+                    $('#medicationDetailShow').empty();
+                    if(data.data.length==0){
+                        $("#medicationDetailShow").append("<li>本次病历没有用药记录</li>");
+                        return;
+                    }
+                    //若请求成功则拼接处用药记录列表
+                    for(var i=0; i<data.data.length; i++){
+                        $('#medicationDetailShow').append("<li>药品名称<mark>"+data.data[i].medicationName+"</mark></li>");
+                        $('#medicationDetailShow').append("<ul>");
+                        $('#medicationDetailShow').append("<li>药品类型<mark>"+data.data[i].type+"</mark></li>");
+                        $('#medicationDetailShow').append("<li>用法用量<mark>"+data.data[i].medicationRule+"</mark></li>");
+                        $('#medicationDetailShow').append("<li>数量<mark>"+data.data[i].amount+"</mark></li>");
+                        $('#medicationDetailShow').append("</ul>");
+                        $('#medicationDetailShow').append("<li>&nbsp;</li>");
+                    }
+                } else{
+                    alert(data.message);
+                    return;
+                }
+            }
+
+        })
+
+    })
+
+    $('#heaDataDetail').click(function(){
+        $.ajax({
+            url: "http://localhost:8080/residenthealthdata/find.do?medicalRecId="+$table.bootstrapTable('getSelections')[0].id,
+            type: "GET",
+            success: function(data){
+                $('#medicationDetailShow').empty();
+                if(data.success){
+                    if(data.data.length==0){
+                        $("#heaDataShow").append("<li>本次病历没有体检记录</li>");
+                        return;
+                    }
+                    //若请求成功则拼接体检记录表
+                    $("#heaDataShow").append("<li>身高: <mark>"+data.data[0].statutre+"</mark></li>");
+                    $("#heaDataShow").append("<li>体重: <mark>"+data.data[0].weight+"</mark></li>");
+                    $("#heaDataShow").append("<li>体温: <mark>"+data.data[0].temperature+"</mark></li>");
+                    $("#heaDataShow").append("<li>收缩压: <mark>"+data.data[0].systolic+"</mark></li>");
+                    $("#heaDataShow").append("<li>舒张压: <mark>"+data.data[0].diastolic+"</mark></li>");
+                    $("#heaDataShow").append("<li>血氧: <mark>"+data.data[0].oxygen+"</mark></li>");
+                    $("#heaDataShow").append("<li>脉搏: <mark>"+data.data[0].sphygmus+"</mark></li>");
+                    $("#heaDataShow").append("<li>呼吸: <mark>"+data.data[0].breath+"</mark></li>");
+                    $("#heaDataShow").append("<li>血型: <mark>"+data.data[0].boold+"</mark></li>");
+                    $("#heaDataShow").append("<li>备注: <mark>"+data.data[0].comment+"</mark></li>");
+
+                } else {
+                    alert(data.message);
+                }
+            }
+
+        })
+
+    })
+
+</script>
+</body>
+</html>

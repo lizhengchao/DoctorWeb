@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--private Integer medicalRecId;
+    private Integer statutre;
+    private Integer weight;
+    private Integer temperature;
+    private Integer systolic;
+    private Integer diastolic;
+    private Integer oxygen;
+    private Integer sphygmus;
+    private Integer breath;
+    private Integer boold;
+    private String comment;
+    private String reporPtictureURL;
+    private Date createTime;
+    private Date modifyTime;-->
+<mapper namespace="com.doctor.resident_health_data">
+    <resultMap id="result_map" type="com.doctor.medical_record.dto.ResHeaDataDTO" >
+        <id column="id" property="id"/>
+        <result property="medicalRecId" column="medicalRecId"/>
+        <result property="statutre" column="statutre"/>
+        <result property="weight" column="weight"/>
+        <result property="temperature" column="temperature"/>
+        <result property="systolic" column="systolic"/>
+        <result property="diastolic" column="diastolic"/>
+        <result property="oxygen" column="oxygen"/>
+        <result property="sphygmus" column="sphygmus"/>
+        <result property="breath" column="breath"/>
+        <result property="boold" column="boold"/>
+        <result property="comment" column="comment"/>
+        <result property="reporPtictureURL" column="reporPtictureURL"/>
+        <result property="createTime" column="createTime"/>
+        <result property="modifyTime" column="modifyTime"/>
+    </resultMap>
+
+    <!-- 数据库字段 -->
+    <sql id="columns">
+        id, medicalRecId, statutre, weight, temperature, systolic, diastolic, oxygen,
+        sphygmus, breath, boold, comment, reporPtictureURL, createTime, modifyTime
+    </sql>
+
+    <!-- 查询条件 -->
+    <sql id="conditions">
+        <where>
+            <choose>
+                <when test="id != null">and id = #{id}</when>
+                <otherwise>
+                    <if test="medicalRecId != null"> and medicalRecId = #{medicalRecId}</if>
+                </otherwise>
+            </choose>
+        </where>
+    </sql>
+
+    <!-- 查询结果集 -->
+    <select id="find" resultMap="result_map"
+            parameterType="com.doctor.medical_record.dto.ResHeaDataQuery">
+        select
+        <include refid="columns"/>
+        from resident_health_data
+        <include refid="conditions"/>
+        ORDER BY #{sort, jdbcType=VARCHAR}  #{order, jdbcType=VARCHAR}
+        <if test="paging == true">
+            limit #{pageIndex, jdbcType=INTEGER},#{pageSize, jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <!-- 查询某条记录 -->
+    <select id="get" resultMap="result_map" parameterType="com.doctor.medical_record.dto.ResHeaDataQuery">
+        select
+        <include refid="columns"/>
+        from resident_health_data
+        <include refid="conditions"/>
+        limit 1
+    </select>
+
+    <!-- 统计查询结果数量 -->
+    <select id="count" resultType="int" parameterType="com.doctor.medical_record.dto.ResHeaDataQuery">
+        select count(*) from resident_health_data
+        <include refid="conditions"/>
+    </select>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="com.doctor.medical_record.dto.ResHeaDataQuery">
+        delete from resident_health_data where id = #{id}
+    </delete>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.doctor.medical_record.dto.ResHeaDataDTO">
+        insert into
+        resident_health_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="medicalRecId != null">
+                medicalRecId,
+            </if>
+            <if test="statutre != null">
+                statutre,
+            </if>
+            <if test="weight != null">
+                weight,
+            </if>
+            <if test="temperature != null">
+                temperature,
+            </if>
+            <if test="systolic != null">
+                systolic,
+            </if>
+            <if test="diastolic != null">
+                diastolic,
+            </if>
+            <if test="oxygen != null">
+                oxygen,
+            </if>
+            <if test="sphygmus != null">
+                sphygmus,
+            </if>
+            <if test="breath != null">
+                breath,
+            </if>
+            <if test="boold != null">
+                boold,
+            </if>
+            <if test="comment != null">
+                comment,
+            </if>
+            <if test="reporPtictureURL != null">
+                reporPtictureURL,
+            </if>
+            createTime,
+            modifyTime,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="medicalRecId != null">
+                #{medicalRecId, jdbcType=INTEGER},
+            </if>
+            <if test="statutre != null">
+                #{statutre, jdbcType=INTEGER},
+            </if>
+            <if test="weight != null">
+                #{weight, jdbcType=INTEGER},
+            </if>
+            <if test="temperature != null">
+                #{temperature, jdbcType=INTEGER},
+            </if>
+            <if test="systolic != null">
+                #{systolic, jdbcType=INTEGER},
+            </if>
+            <if test="diastolic != null">
+                #{diastolic, jdbcType=INTEGER},
+            </if>
+            <if test="oxygen != null">
+                #{oxygen, jdbcType=INTEGER},
+            </if>
+            <if test="sphygmus != null">
+                #{sphygmus, jdbcType=INTEGER},
+            </if>
+            <if test="breath != null">
+                #{breath, jdbcType=INTEGER},
+            </if>
+            <if test="boold != null">
+                #{boold, jdbcType=INTEGER},
+            </if>
+            <if test="comment != null">
+                #{comment, jdbcType=VARCHAR},
+            </if>
+            <if test="reporPtictureURL != null">
+                #{reporPtictureURL, jdbcType=VARCHAR},
+            </if>
+            now(),
+            now(),
+        </trim>
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.doctor.medical_record.dto.ResHeaDataDTO">
+        UPDATE resident_health_data
+        <set>
+            <if test="medicalRecId != null">
+                medicalRecId = #{medicalRecId, jdbcType=INTEGER},
+            </if>
+            <if test="statutre != null">
+                statutre = #{statutre, jdbcType=INTEGER},
+            </if>
+            <if test="weight != null">
+                weight = #{weight, jdbcType=INTEGER},
+            </if>
+            <if test="temperature != null">
+                temperature = #{temperature, jdbcType=INTEGER},
+            </if>
+            <if test="systolic != null">
+                systolic = #{systolic, jdbcType=INTEGER},
+            </if>
+            <if test="diastolic != null">
+                diastolic = #{diastolic, jdbcType=INTEGER},
+            </if>
+            <if test="oxygen != null">
+                oxygen = #{oxygen, jdbcType=INTEGER},
+            </if>
+            <if test="sphygmus != null">
+                sphygmus = #{sphygmus, jdbcType=INTEGER},
+            </if>
+            <if test="breath != null">
+                breath = #{breath, jdbcType=INTEGER},
+            </if>
+            <if test="boold != null">
+                boold = #{boold, jdbcType=INTEGER},
+            </if>
+            <if test="comment != null">
+                comment = #{comment, jdbcType=VARCHAR},
+            </if>
+            <if test="reporPtictureURL != null">
+                reporPtictureURL = #{reporPtictureURL, jdbcType=VARCHAR},
+            </if>
+            modifyTime = now()
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+</mapper>

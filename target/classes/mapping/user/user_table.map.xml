@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doctor.user">
+    <resultMap id="result_map" type="com.doctor.user.dto.UserDTO" >
+        <id column="id" property="id"/>
+        <result property="userType" column="userType"/>
+        <result property="identificationId" column="identificationId"/>
+        <result property="resDocId" column="resDocId"/>
+        <result property="nickname" column="nickname"/>
+        <result property="password" column="password"/>
+        <result property="createTime" column="createTime"/>
+        <result property="modifyTime" column="modifyTime"/>
+    </resultMap>
+
+    <!-- 数据库字段 -->
+    <sql id="columns">
+        id, userType, identificationId, resDocId, nickname, password, createTime, modifyTime
+    </sql>
+
+    <!-- 查询条件 -->
+    <sql id="conditions">
+        <where>
+            <choose>
+                <when test="id != null">and id = #{id}</when>
+                <otherwise>
+                    <if test="userType != null"> and userType = #{userType}</if>
+                    <if test="identificationId != null"> and identificationId = #{identificationId}</if>
+                    <if test="resDocId != null"> and resDocId = #{resDocId}</if>
+                    <if test="nickname != null"> and nickname = #{nickname}</if>
+                    <if test="password != null"> and password = #{password}</if>
+                </otherwise>
+            </choose>
+        </where>
+    </sql>
+
+
+    <!-- 查询结果集 -->
+    <select id="find" resultMap="result_map"
+            parameterType="com.doctor.user.dto.UserQuery">
+        select
+        <include refid="columns"/>
+        from user_table
+        <include refid="conditions"/>
+        order by createTime DESC
+        <if test="paging == true">
+            limit #{pageIndex, jdbcType=INTEGER},#{pageSize, jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <!-- 查询某条记录 -->
+    <select id="get" resultMap="result_map" parameterType="com.doctor.user.dto.UserQuery">
+        select
+        <include refid="columns"/>
+        from user_table
+        <include refid="conditions"/>
+        limit 1
+    </select>
+
+    <!-- 统计查询结果数量 -->
+    <select id="count" resultType="int" parameterType="com.doctor.user.dto.UserQuery">
+        select count(*) from user_table
+        <include refid="conditions"/>
+    </select>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="com.doctor.user.dto.UserQuery">
+        delete from user_table where id = #{id}
+    </delete>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.doctor.user.dto.UserDTO">
+        insert into
+        user_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userType != null">
+                userType,
+            </if>
+            <if test="identificationId != null">
+                identificationId,
+            </if>
+            <if test="resDocId != null">
+                resDocId,
+            </if>
+            <if test="nickname != null">
+                nickname,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            createTime,
+            modifyTime,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userType != null">
+                #{userType, jdbcType=INTEGER},
+            </if>
+            <if test="identificationId != null">
+                #{identificationId, jdbcType=VARCHAR},
+            </if>
+            <if test="resDocId != null">
+                #{resDocId, jdbcType=INTEGER},
+            </if>
+            <if test="nickname != null">
+                #{nickname, jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password, jdbcType=VARCHAR},
+            </if>
+            now(),
+            now(),
+        </trim>
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.doctor.community_hospital.dto.CommunityHospitalDTO">
+        UPDATE user_table
+        <set>
+            <if test="userType != null">
+                userType = #{userType, jdbcType=INTEGER},
+            </if>
+            <if test="identificationId != null">
+                identificationId = #{identificationId, jdbcType=VARCHAR},
+            </if>
+            <if test="resDocId != null">
+                resDocId = #{resDocId, jdbcType=INTEGER},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname, jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password, jdbcType=VARCHAR},
+            </if>
+            modifyTime = now()
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+</mapper>

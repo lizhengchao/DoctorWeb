@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doctor.medicine">
+    <resultMap id="result_map" type="com.doctor.medicine.dto.MedicineDTO" >
+        <id column="id" property="id"/>
+        <result property="name" column="name"/>
+        <result property="spellingName" column="spellingName"/>
+        <result property="type" column="type"/>
+        <result property="supplyUnit" column="supplyUnit"/>
+        <result property="factory" column="factory"/>
+        <result property="price" column="price"/>
+        <result property="number" column="number"/>
+        <result property="createTime" column="createTime"/>
+        <result property="modifyTime" column="modifyTime"/>
+    </resultMap>
+
+    <!-- 数据库字段 -->
+    <sql id="columns">
+        id, name, spellingName, type, supplyUnit, factory, price, number, createTime, modifyTime
+    </sql>
+
+    <!-- 查询条件 -->
+    <sql id="conditions">
+        <where>
+            <choose>
+                <when test="id != null">and id = #{id}</when>
+                <otherwise>
+                    <if test="type != null"> and type = #{type}</if>
+                    <if test="nameLike != null"> and (name like CONCAT(CONCAT('%', #{nameLike}), '%')
+                        OR spellingName like CONCAT(CONCAT('%', #{nameLike}), '%'))</if>
+                    <if test="factoryLike != null"> and factory like CONCAT(CONCAT('%', #{factoryLike}), '%')</if>
+                </otherwise>
+            </choose>
+        </where>
+    </sql>
+
+    <!-- 查询结果集 -->
+    <select id="find" resultMap="result_map"
+            parameterType="com.doctor.medicine.dto.MedicineQuery">
+        select
+        <include refid="columns"/>
+        from medicine
+        <include refid="conditions"/>
+        ORDER BY #{sort, jdbcType=VARCHAR}  #{order, jdbcType=VARCHAR}
+        <if test="paging == true">
+            limit #{pageIndex, jdbcType=INTEGER},#{pageSize, jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <!-- 查询某条记录 -->
+    <select id="get" resultMap="result_map" parameterType="com.doctor.medicine.dto.MedicineQuery">
+        select
+        <include refid="columns"/>
+        from medicine
+        <include refid="conditions"/>
+        limit 1
+    </select>
+
+    <!-- 统计查询结果数量 -->
+    <select id="count" resultType="int" parameterType="com.doctor.medicine.dto.MedicineQuery">
+        select count(*) from medicine
+        <include refid="conditions"/>
+    </select>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="com.doctor.medicine.dto.MedicineQuery">
+        delete from medicine where id = #{id}
+    </delete>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.doctor.medicine.dto.MedicineDTO">
+        insert into
+        medicine
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                name,
+            </if>
+            <if test="spellingName != null">
+                spellingName,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="supplyUnit != null">
+                supplyUnit,
+            </if>
+            <if test="factory != null">
+                factory,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="number != null">
+                number,
+            </if>
+            createTime,
+            modifyTime,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name, jdbcType=VARCHAR},
+            </if>
+            <if test="spellingName != null">
+                #{spellingName, jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type, jdbcType=INTEGER},
+            </if>
+            <if test="supplyUnit != null">
+                #{supplyUnit, jdbcType=VARCHAR},
+            </if>
+            <if test="factory != null">
+                #{factory, jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price, jdbcType=INTEGER},
+            </if>
+            <if test="number != null">
+                #{number, jdbcType=INTEGER},
+            </if>
+            now(),
+            now(),
+        </trim>
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.doctor.medicine.dto.MedicineDTO">
+        UPDATE medicine
+        <set>
+            <if test="name != null">
+                name = #{name, jdbcType=VARCHAR},
+            </if>
+            <if test="spellingName != null">
+                spellingName = #{spellingName, jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type, jdbcType=INTEGER},
+            </if>
+            <if test="supplyUnit != null">
+                supplyUnit = #{supplyUnit, jdbcType=VARCHAR},
+            </if>
+            <if test="factory != null">
+                factory = #{factory, jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                price = #{price, jdbcType=INTEGER},
+            </if>
+            <if test="number != null">
+                number = #{number, jdbcType=INTEGER},
+            </if>
+            modifyTime = now()
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+</mapper>

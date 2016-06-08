@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doctor.medical_record">
+    <resultMap id="result_map" type="com.doctor.medical_record.dto.MedicalRecDTO" >
+        <id column="id" property="id"/>
+        <result property="resId" column="resId"/>
+        <result property="docId" column="docId"/>
+        <result property="resHeaDatId" column="resHeaDatId"/>
+        <result property="chiefComplaint" column="chiefComplaint"/>
+        <result property="suggest" column="suggest"/>
+        <result property="medicationRecIds" column="medicationRecIds"/>
+        <result property="createTime" column="createTime"/>
+        <result property="modifyTime" column="modifyTime"/>
+    </resultMap>
+
+    <!-- 数据库字段 -->
+    <sql id="columns">
+        id, resId, docId, resHeaDatId, chiefComplaint, suggest, medicationRecIds, createTime, modifyTime
+    </sql>
+
+    <!-- 查询条件 -->
+    <sql id="conditions">
+        <where>
+            <choose>
+                <when test="id != null">and id = #{id}</when>
+                <otherwise>
+                    <if test="resId != null"> and resId = #{resId}</if>
+                    <if test="docId != null"> and docId = #{docId}</if>
+                    <if test="startTime != null"> and createTime &gt; #{startTime}</if>
+                    <if test="endTime != null"> and createTime &lt; #{endTime}</if>
+                    <if test="resIds != null">
+                        <foreach collection="resIds" item="item" open=" and " index="index" separator=" or ">
+                          resId like '%${item}%'
+                        </foreach>
+                    </if>
+                </otherwise>
+            </choose>
+        </where>
+    </sql>
+
+    <!-- 查询结果集 -->
+    <select id="find" resultMap="result_map"
+            parameterType="com.doctor.medical_record.dto.MedicalRecQuery">
+        select
+        <include refid="columns"/>
+        from medical_record
+        <include refid="conditions"/>
+        ORDER BY #{sort, jdbcType=VARCHAR}  #{order, jdbcType=VARCHAR}
+        <if test="paging == true">
+            limit #{pageIndex, jdbcType=INTEGER},#{pageSize, jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <!-- 查询某条记录 -->
+    <select id="get" resultMap="result_map" parameterType="com.doctor.medical_record.dto.MedicalRecQuery">
+        select
+        <include refid="columns"/>
+        from medical_record
+        <include refid="conditions"/>
+        limit 1
+    </select>
+
+    <!-- 统计查询结果数量 -->
+    <select id="count" resultType="int" parameterType="com.doctor.medical_record.dto.MedicalRecQuery">
+        select count(*) from medical_record
+        <include refid="conditions"/>
+    </select>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="com.doctor.medical_record.dto.MedicalRecQuery">
+        delete from medical_record where id = #{id}
+    </delete>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.doctor.medical_record.dto.MedicalRecDTO">
+        insert into
+        medical_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="resId != null">
+                resId,
+            </if>
+            <if test="docId != null">
+                docId,
+            </if>
+            <if test="resHeaDatId != null">
+                resHeaDatId,
+            </if>
+            <if test="chiefComplaint != null">
+                chiefComplaint,
+            </if>
+            <if test="suggest != null">
+                suggest,
+            </if>
+            <if test="medicationRecIds != null">
+                medicationRecIds,
+            </if>
+            createTime,
+            modifyTime,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="resId != null">
+                #{resId, jdbcType=INTEGER},
+            </if>
+            <if test="docId != null">
+                #{docId, jdbcType=INTEGER},
+            </if>
+            <if test="resHeaDatId != null">
+                #{resHeaDatId, jdbcType=INTEGER},
+            </if>
+            <if test="chiefComplaint != null">
+                #{chiefComplaint, jdbcType=VARCHAR},
+            </if>
+            <if test="suggest != null">
+                #{suggest, jdbcType=VARCHAR},
+            </if>
+            <if test="medicationRecIds != null">
+                #{medicationRecIds, jdbcType=VARCHAR},
+            </if>
+            now(),
+            now(),
+        </trim>
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.doctor.medical_record.dto.MedicalRecDTO">
+        UPDATE medical_record
+        <set>
+            <if test="resId != null">
+                resId = #{resId, jdbcType=INTEGER},
+            </if>
+            <if test="docId != null">
+                docId = #{docId, jdbcType=INTEGER},
+            </if>
+            <if test="resHeaDatId != null">
+                resHeaDatId = #{resHeaDatId, jdbcType=INTEGER},
+            </if>
+            <if test="chiefComplaint != null">
+                chiefComplaint = #{chiefComplaint, jdbcType=VARCHAR},
+            </if>
+            <if test="suggest != null">
+                suggest = #{suggest, jdbcType=VARCHAR},
+            </if>
+            <if test="medicationRecIds != null">
+                medicationRecIds = #{medicationRecIds, jdbcType=VARCHAR},
+            </if>
+            modifyTime = now()
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+</mapper>
