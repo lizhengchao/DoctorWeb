@@ -4,6 +4,7 @@ import com.doctor.common.BootstrapJsonResult;
 import com.doctor.common.CommonController;
 import com.doctor.common.Result;
 import com.doctor.message_record.dto.MessageRecordQuery;
+import com.doctor.message_record.dto.MessageRecordVO;
 import com.doctor.message_record.dto.MessageReocrdDTO;
 import com.doctor.message_record.service.MessageRecordService;
 import org.springframework.stereotype.Controller;
@@ -75,7 +76,7 @@ public class MessageRecordController extends CommonController{
         if (null != comHosId){
             messageRecordQuery.setComHosId(comHosId);
         }
-        Result<List<MessageReocrdDTO>> result = messageRecordService.find(messageRecordQuery);
+        Result<List> result = messageRecordService.findWithVO(messageRecordQuery);
         if (result.getSuccess()) {
             BootstrapJsonResult bootstrapJsonResult = new BootstrapJsonResult();
             bootstrapJsonResult.setTotal(messageRecordService.count(new MessageRecordQuery()).getData());

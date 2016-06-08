@@ -78,4 +78,18 @@ public class MessageReocrdDTO {
     public void setResId(Integer resId) {
         this.resId = resId;
     }
+
+    public MessageReocrdDTO() {
+    }
+
+    public MessageReocrdDTO(MessageReocrdDTO messageReocrdDTO) {
+        this.id = messageReocrdDTO.id;
+        this.resId = messageReocrdDTO.resId;
+        this.comHosId = messageReocrdDTO.comHosId;
+        this.docId = messageReocrdDTO.docId;
+        this.requestMessage = messageReocrdDTO.requestMessage;
+        this.answerMessage = messageReocrdDTO.answerMessage;
+        this.requestTime = messageReocrdDTO.requestTime;
+        this.answerTime = messageReocrdDTO.answerTime;
+    }
 }
