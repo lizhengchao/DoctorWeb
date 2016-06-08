@@ -8,18 +8,15 @@ $(document).ready(function () {
         success: function(data){
             //用户已登录则修改导航栏内容
             if(data.success){
-                userId = data.data.id;
-                userName = data.data.nickname;
-                sessionStorage.setItem("userId", data.data.id);
-                sessionStorage.setItem("userName", data.data.nickname);
-                sessionStorage.setItem("residentId", data.data.resDocId);
-                $('#nameLi').text(userName);
+                $('#nameLi').text(sessionStorage.getItem("userName"));
                 $('#loginLi').css("display","none");
                 $('#registerLi').css("display","none");
                 $('#serviceLi').css("display","block");
                 $('#infoLi').css("display","block");
                 $('#logoutLi').css("display","block");
-                $('nickname').val(userName);
+                $('nickname').val(sessionStorage.getItem("userName"));
+            } else {
+                window.location = "./resident-index.html";
             }
         }
     })
@@ -35,7 +32,9 @@ function logout(){
                 sessionStorage.removeItem("userId");
                 sessionStorage.removeItem("userName");
                 sessionStorage.removeItem("residentId");
-                window.location = "../resident-index.html"
+                sessionStorage.removeItem("comHosId");
+                sessionStorage.removeItem("comHosName");
+                window.location = "./resident-index.html"
 
             } else {
                 alert(data.message);

@@ -65,7 +65,7 @@
                 <li><a class="sOutbox" title="" href="#">个人头衔</a></li>
             </ul>
         </li>
-        <li class="btn btn-inverse"><a title="" href="login.html"><i class="icon icon-share-alt"></i> <span
+        <li class="btn btn-inverse"><a title="" href="javascript:logout()"><i class="icon icon-share-alt"></i> <span
                 class="text">注销</span></a></li>
     </ul>
 </div>
@@ -84,6 +84,7 @@
         </li>
         <li><a href="home-service.html"><i class="icon icon-th-list"></i> <span>上门服务</span></a></li>
         <li><a href="message.html"><i class="icon icon-th-list"></i> <span>留言管理</span></a></li>
+        <li><a href="medicine.html"><i class="icon icon-th-list"></i> <span>药品管理</span></a></li>
     </ul>
 
 </div>
@@ -179,10 +180,6 @@
         </div>
         <table id="table"
                data-toolbar="#toolbar"
-               data-show-refresh="true"
-               data-show-toggle="true"
-               data-show-columns="true"
-               data-show-export="true"
                data-detail-view="true"
                data-detail-formatter="detailFormatter"
                data-minimum-count-columns="2"
@@ -212,6 +209,7 @@
 <script src="assets/ga.js"></script>
 <script src="js/myjs/mybootstraptable.js"></script>
 <script src="js/myjs/converttime.js"></script>
+<script src="js/myjs/doctorjs.js"></script>
 <script>
     var $table = $('#table'),
             selections = [];
@@ -224,7 +222,7 @@
                 [
                     {
                         field: 'state',
-                        formatter: true,
+                        checkbox: true,
                         rowspan: 2,
                         align: 'center',
                         valign: 'middle'
@@ -234,7 +232,6 @@
                     rowspan: 2,
                     align: 'center',
                     valign: 'middle',
-                    sortable: true
                 }, {
                     title: '病历信息',
                     colspan: 10,
@@ -245,9 +242,15 @@
                     {
                         field: 'resName',
                         title: '居民姓名',
-                        sortable: true,
-                        editable: true,
-                        align: 'center'
+                        align: 'center',
+                        editable: {
+                            type: 'text',
+                            source: [
+                                {value: 'active', text: 'Active'},
+                                {value: 'blocked', text: 'Blocked'},
+                                {value: 'deleted', text: 'Deleted'}
+                            ]
+                        }
                     }, {
                     field: 'doctorName',
                     title: '医生姓名',

@@ -4,23 +4,23 @@ package com.doctor.user.dto;
  * Created by lzc on 2016/5/30.
  */
 public class UserVO extends UserDTO{
-    private Integer comhisid;
-    private String comhisname;
+    private Integer comHosId;
+    private String comHosName;
 
-    public Integer getComhisid() {
-        return comhisid;
+    public Integer getComHosId() {
+        return comHosId;
     }
 
-    public void setComhisid(Integer comhisid) {
-        this.comhisid = comhisid;
+    public void setComHosId(Integer comHosId) {
+        this.comHosId = comHosId;
     }
 
-    public String getComhisname() {
-        return comhisname;
+    public String getComHosName() {
+        return comHosName;
     }
 
-    public void setComhisname(String comhisname) {
-        this.comhisname = comhisname;
+    public void setComHosName(String comHosName) {
+        this.comHosName = comHosName;
     }
 
     public void setDTO(UserDTO userDTO){

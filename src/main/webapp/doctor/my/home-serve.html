@@ -136,7 +136,7 @@
                     <div class="col-md-8 col-md-offset-2">
                         <div class="control-group">
                             <div class="controls">
-                                <button style="margin-top: 20px" type="button" class="btn btn-default">确认</button>
+                                <button style="margin-top: 20px" type="button" class="btn btn-default" id="submit">确认</button>
                             </div>
                         </div>
                     </div>
@@ -159,6 +159,7 @@
 <script>
     var userId;
     var userName;
+    var $docSelect = $('#docSelect');
 
     $(document).ready(function () {
         appendDoctorList()
@@ -182,5 +183,33 @@
             }
         });
     }
+
+    $('#submit').click(function(){
+        var doctorId;
+        if($docSelect.val()==""){
+            doctorId = null;
+        } else {
+            doctorId = $docSelect.val();
+        }
+        $.ajax({
+            url: "http://localhost:8080/homeservice/insert.do",
+            type: "POST",
+            data: {
+                "resId":sessionStorage.getItem("residentId"),
+                "docId":doctorId,
+                "comHosId":sessionStorage.getItem("comHosId"),
+                "requestInfo": $('#requestInfo').val(),
+                "phoneNumber": $('#phoneNumber').val(),
+                "homeAddress": $('#homeAddress').val()
+            },
+            success: function(data){
+                if(data.success){
+                    alert("留言成功");
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
+    })
 
 </script>

@@ -5,15 +5,15 @@
     <title>社区医疗辅助系统</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/bootstrap-responsive.min.css"/>
-    <link rel="stylesheet" href="css/fullcalendar.css"/>
-    <link rel="stylesheet" href="css/jquery-ui.css"/>
-    <link rel="stylesheet" href="css/uniform.css"/>
-    <link rel="stylesheet" href="css/select2.css"/>
-    <link rel="stylesheet" href="assets/bootstrap-table/src/bootstrap-table.css">
-    <link rel="stylesheet" href="assets/examples.css">
-    <link rel="stylesheet" href="css/my.css">
-    <link rel="stylesheet" href="css/main.min.css">
+    <link rel="stylesheet" href="../css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="../css/fullcalendar.css"/>
+    <link rel="stylesheet" href="../css/jquery-ui.css"/>
+    <link rel="stylesheet" href="../css/uniform.css"/>
+    <link rel="stylesheet" href="../css/select2.css"/>
+    <link rel="stylesheet" href="../assets/bootstrap-table/src/bootstrap-table.css">
+    <link rel="stylesheet" href="../assets/examples.css">
+    <link rel="stylesheet" href="../css/my.css">
+    <link rel="stylesheet" href="../css/main.min.css">
     <style>
 
     </style>
@@ -93,8 +93,8 @@
                     <li><a href="#">查找医院、医生</a></li>
                     <li id="loginLi"><a href="#" data-toggle="modal" data-target="#loginModal">登录</a></li>
                     <li id="registerLi"><a href="#" data-toggle="modal" data-target="#registerModal">注册</a></li>
-                    <li id="serviceLi" style="display: none"><a href="my/message.html">个人服务</a></li>
-                    <li id="infoLi" style="display: none"><a href="my/my-info.html">个人信息</a></li>
+                    <li id="serviceLi" style="display: none"><a href="message.html">个人服务</a></li>
+                    <li id="infoLi" style="display: none"><a href="my-info.html">个人信息</a></li>
                     <li id="logoutLi" style="display: none"><a role="button" href="javascript:logout();">登出</a></li>
                 </ul>
             </div>
@@ -103,16 +103,15 @@
 </nav>
 <div></div>
 
-<script src="js/jquery.min.js"></script>
-<script src="js/jquery-ui.custom.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/jquery.uniform.js"></script>
-<script src="js/select2.min.js"></script>
-<script src="js/jquery.dataTables.min.js"></script>
-<script src="assets/bootstrap-table/src/bootstrap-table.js"></script>
-<script src="assets/ga.js"></script>
-<script src="js/myjs/converttime.js"></script>
-<script src="js/myjs/residentjs.js"></script>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/jquery-ui.custom.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/jquery.uniform.js"></script>
+<script src="../js/select2.min.js"></script>
+<script src="../js/jquery.dataTables.min.js"></script>
+<script src="../assets/bootstrap-table/src/bootstrap-table.js"></script>
+<script src="../assets/ga.js"></script>
+<script src="../js/myjs/converttime.js"></script>
 <script>
     var userId;
     var userName;
@@ -132,8 +131,11 @@
             type: "GET",
             success: function(data){
                 if(data.success){
-                    sessionStorage.setItem("comHosId", data.data.comhisid);
-                    sessionStorage.setItem("comHosName", data.data.comhisname);
+                    sessionStorage.setItem("userId", data.data.id);
+                    sessionStorage.setItem("userName", data.data.nickname);
+                    sessionStorage.setItem("residentId", data.data.resDocId);
+                    sessionStorage.setItem("comHosId", data.data.comHosId);
+                    sessionStorage.setItem("comHosName", data.data.comHosName);
                     window.location = "./resident-index.html"
 
                 } else {
@@ -142,6 +144,26 @@
             }
         })
     }
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "http://localhost:8080/user/haslogin.do",
+            type: "GET",
+            success: function(data){
+                //用户已登录则修改导航栏内容
+                if(data.success){
+                    $('#nameLi').text(sessionStorage.getItem("userName"));
+                    $('#loginLi').css("display","none");
+                    $('#registerLi').css("display","none");
+                    $('#serviceLi').css("display","block");
+                    $('#infoLi').css("display","block");
+                    $('#logoutLi').css("display","block");
+                    $('nickname').val(sessionStorage.getItem("userName"));
+                }
+            }
+        })
+    })
+
 
     function logout(){
         $.ajax({
@@ -152,8 +174,9 @@
                     sessionStorage.removeItem("userId");
                     sessionStorage.removeItem("userName");
                     sessionStorage.removeItem("residentId");
+                    sessionStorage.removeItem("comHosId");
+                    sessionStorage.removeItem("comHosName");
                     window.location = "./resident-index.html"
-
                 } else {
                     alert(data.message);
                 }

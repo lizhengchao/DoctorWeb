@@ -10,6 +10,15 @@ public class MessageRecordQuery extends BaseQuery{
     private Integer resId;
     private Integer comHosId;
     private Integer docId;
+    private Integer docIdAndNull; //此字段塞入docId时查询的结果还包括doctorId字段为空的数据
+
+    public Integer getDocIdAndNull() {
+        return docIdAndNull;
+    }
+
+    public void setDocIdAndNull(Integer docIdAndNull) {
+        this.docIdAndNull = docIdAndNull;
+    }
 
     public Integer getComHosId() {
         return comHosId;

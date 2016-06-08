@@ -66,6 +66,8 @@ public class UserController extends CommonController{
             HttpSession session = request1.getSession();
             session.setAttribute("userId", result.getData().getId());
             session.setAttribute("nickname", result.getData().getNickname());
+            session.setAttribute("comHosId", result.getData().getComHosId());
+            session.setAttribute("comHosName", result.getData().getComHosName());
             if (userType.equals(UserDTO.UserType.doctor.getType())){
                 session.setAttribute("doctorId", result.getData().getResDocId());
             } else if (userType.equals(UserDTO.UserType.resident.getType())){
@@ -82,11 +84,17 @@ public class UserController extends CommonController{
         if (null != session.getAttribute("userId")){
             session.removeAttribute("userId");
         }
+        if (null != session.getAttribute("nickname")){
+            session.removeAttribute("nickname");
+        }
         if (null != session.getAttribute("doctorId")){
             session.removeAttribute("doctorId");
         }
-        if (null != session.getAttribute("nickname")){
-            session.removeAttribute("nickname");
+        if (null != session.getAttribute("comHosId")){
+            session.removeAttribute("comHosId");
+        }
+        if (null != session.getAttribute("comHosName")){
+            session.removeAttribute("comHosName");
         }
         if (null != session.getAttribute("residentId")){
             session.removeAttribute("residentId");

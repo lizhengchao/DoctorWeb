@@ -7,6 +7,7 @@ import com.doctor.common.BaseQuery;
  */
 public class HomeServiceQuery extends BaseQuery{
     private Integer id;
+    private Integer comHosId;
     private Integer resId;
     private Integer docId;
 
@@ -16,6 +17,14 @@ public class HomeServiceQuery extends BaseQuery{
 
     public void setDocId(Integer docId) {
         this.docId = docId;
+    }
+
+    public Integer getComHosId() {
+        return comHosId;
+    }
+
+    public void setComHosId(Integer comHosId) {
+        this.comHosId = comHosId;
     }
 
     public Integer getId() {

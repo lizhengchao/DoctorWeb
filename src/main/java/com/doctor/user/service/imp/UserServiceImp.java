@@ -106,13 +106,13 @@ public class UserServiceImp extends CommonService<UserDTO, UserQuery,UserDAO>
                     doctorQuery.setId(userQuery.getResDocId());
                     DoctorDTO doctorDTO = doctorDAO.get(doctorQuery);
                     if (null != doctorDTO){
-                        userVO.setComhisid(doctorDTO.getComHosId());
+                        userVO.setComHosId(doctorDTO.getComHosId());
                         //将所属社区医院名字加入VO
                         CommunityHospitalQuery communityHospitalQuery = new CommunityHospitalQuery();
                         communityHospitalQuery.setId(doctorDTO.getComHosId());
                         CommunityHospitalDTO communityHospitalDTO = communityHospitalDAO.get(communityHospitalQuery);
                         if (null != communityHospitalDTO){
-                            userVO.setComhisname(communityHospitalDTO.getName());
+                            userVO.setComHosName(communityHospitalDTO.getName());
                         }
                     }
                     //登录类型为居民
@@ -121,13 +121,13 @@ public class UserServiceImp extends CommonService<UserDTO, UserQuery,UserDAO>
                     residentQuery.setId(userQuery.getResDocId());
                     ResidentDTO residentDTO = residentDAO.get(residentQuery);
                     if (null != residentDTO) {
-                        userVO.setComhisid(residentDTO.getComHosId());
+                        userVO.setComHosId(residentDTO.getComHosId());
                         //将所属社区医院名字加入VO
                         CommunityHospitalQuery communityHospitalQuery = new CommunityHospitalQuery();
                         communityHospitalQuery.setId(residentDTO.getComHosId());
                         CommunityHospitalDTO communityHospitalDTO = communityHospitalDAO.get(communityHospitalQuery);
                         if (null != communityHospitalDTO) {
-                            userVO.setComhisname(communityHospitalDTO.getName());
+                            userVO.setComHosName(communityHospitalDTO.getName());
                         }
                     }
                 }

@@ -7,6 +7,7 @@ import java.util.Date;
  */
 public class HomeServiceDTO {
     private Integer id;
+    private Integer comHosId;
     private Integer resId;
     private Integer docId;
     private String requestInfo;
@@ -15,6 +16,14 @@ public class HomeServiceDTO {
     private Integer medicalRecId;
     private Date requestTime;
     private Date solveTime;
+
+    public Integer getComHosId() {
+        return comHosId;
+    }
+
+    public void setComHosId(Integer comHosId) {
+        this.comHosId = comHosId;
+    }
 
     public Integer getDocId() {
         return docId;

@@ -120,8 +120,8 @@
             <div class="row">
                 <div class="col-md-8 col-md-offset-2">
                     <div class="form-group">
-                        <label for="messageInfo">请输入留言内容</label>
-                        <textarea id="messageInfo" class="form-control" style="min-height: 100px"></textarea>
+                        <label for="requestMessage">请输入留言内容</label>
+                        <textarea id="requestMessage" class="form-control" style="min-height: 100px"></textarea>
                     </div>
                 </div>
             </div>
@@ -129,7 +129,7 @@
                 <div class="col-md-8 col-md-offset-2">
                     <div class="control-group">
                         <div class="controls">
-                            <button style="margin-top: 20px" type="button" class="btn btn-default">确认</button>
+                            <button style="margin-top: 20px" type="button" class="btn btn-primary" id="submit">确认</button>
                         </div>
                     </div>
                 </div>
@@ -154,7 +154,7 @@
     var $docSelect = $('#docSelect');
 
     $(document).ready(function () {
-        $('#currentComHosName').text(sessionStorage.getItem("comHosId"));
+        $('#currentComHosName').text(sessionStorage.getItem("comHosName"));
         appendDoctorList()
     })
 
@@ -164,6 +164,7 @@
             success: function (data) {
                 if (data.success == true) {
                     var doctors = data.data;
+                    $docSelect.append("<option value=''selected = 'selected'>不选</option>")
                     for (var i = 0; i < doctors.length; i++) {
                         $docSelect.append("<option value='" + doctors[i].id + "'>"
                         + doctors[i].name + "</option>");
@@ -175,6 +176,27 @@
             }
         });
     }
+
+    $('#submit').click(function(){
+        $.ajax({
+            url: "http://localhost:8080/messagerecord/insert.do",
+            type: "POST",
+            data: {
+                "resId":sessionStorage.getItem("residentId"),
+                "docId":$docSelect.val(),
+                "comHosId":sessionStorage.getItem("comHosId"),
+                "requestMessage": $('#requestMessage').val()
+            },
+            success: function(data){
+                if(data.success){
+                    alert("留言成功");
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
+
+    })
 
 
 </script>

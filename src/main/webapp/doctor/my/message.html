@@ -120,8 +120,8 @@
             <div class="row">
                 <div class="col-md-8 col-md-offset-2">
                     <div class="form-group">
-                        <label for="messageInfo">请输入留言内容</label>
-                        <textarea id="messageInfo" class="form-control" style="min-height: 100px"></textarea>
+                        <label for="requestMessage">请输入留言内容</label>
+                        <textarea id="requestMessage" class="form-control" style="min-height: 100px"></textarea>
                     </div>
                 </div>
             </div>
@@ -177,7 +177,24 @@
         });
     }
 
-    $('#btn-primary').click(function(){
+    $('#submit').click(function(){
+        $.ajax({
+            url: "http://localhost:8080/messagerecord/insert.do",
+            type: "POST",
+            data: {
+                "resId":sessionStorage.getItem("residentId"),
+                "docId":$docSelect.val(),
+                "comHosId":sessionStorage.getItem("comHosId"),
+                "requestMessage": $('#requestMessage').val()
+            },
+            success: function(data){
+                if(data.success){
+                    alert("留言成功");
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
 
     })
 

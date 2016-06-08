@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
 public class MessageRecordDAOImp extends CommonDAO<MessageReocrdDTO, MessageRecordQuery> implements MessageRecordDAO{
     @Override
     public String getPrefix() {
-        return "com.doctor.message_record";
+        return "com.doctor.message_record.";
     }
 }

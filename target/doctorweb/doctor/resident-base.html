@@ -15,8 +15,8 @@
     <link rel="stylesheet" href="css/select2.css"/>
     <link rel="stylesheet" href="assets/bootstrap-table/src/bootstrap-table.css">
     <link rel="stylesheet" href="assets/examples.css">
-    <link rel="stylesheet"
-          href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">
+    <!--<link rel="stylesheet"-->
+          <!--href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">-->
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/my.css">
     <style>
@@ -69,7 +69,7 @@
                 <li><a class="sOutbox" title="" href="#">个人头衔</a></li>
             </ul>
         </li>
-        <li class="btn btn-inverse"><a title="" href="login.html"><i class="icon icon-share-alt"></i> <span
+        <li class="btn btn-inverse"><a title="" href="javascript:logout()"><i class="icon icon-share-alt"></i> <span
                 class="text">注销</span></a></li>
     </ul>
 </div>
@@ -88,6 +88,7 @@
         </li>
         <li><a href="home-service.html"><i class="icon icon-th-list"></i> <span>上门服务</span></a></li>
         <li><a href="message.html"><i class="icon icon-th-list"></i> <span>留言管理</span></a></li>
+        <li><a href="medicine.html"><i class="icon icon-th-list"></i> <span>药品管理</span></a></li>
     </ul>
 
 </div>
@@ -238,10 +239,6 @@
         <table id="table"
                data-toolbar="#toolbar"
                data-search="true"
-               data-show-refresh="true"
-               data-show-toggle="true"
-               data-show-columns="true"
-               data-show-export="true"
                data-detail-view="true"
                data-detail-formatter="detailFormatter"
                data-minimum-count-columns="2"
@@ -269,6 +266,7 @@
 <script src="assets/bootstrap-table/src/bootstrap-table.js"></script>
 <script src="js/myjs/mybootstraptable.js"></script>
 <script src="assets/ga.js"></script>
+<script src="js/myjs/doctorjs.js"></script>
 <script>
     var $table = $('#table'),
             $remove = $('#remove'),
@@ -293,93 +291,66 @@
                     field: 'id',
                     rowspan: 2,
                     align: 'center',
-                    valign: 'middle',
-                    sortable: true
-                }, {
-                    title: '居民详情',
-                    colspan: 10,
-                    align: 'center'
-                }
+                    valign: 'middle'
+                    }, {
+                        title: '居民详情',
+                        colspan: 10,
+                        align: 'center'
+                    }
                 ],
                 [
                     {
                         field: 'name',
                         title: '姓名',
-                        sortable: true,
-                        editable: true,
                         align: 'center'
                     }, {
                     field: 'sexName',
                     title: '性别',
-                    sortable: true,
-                    align: 'center',
-                    editable: true
+                    align: 'center'
                 }, {
                     field: 'identificationId',
                     title: '身份证号',
-                    sortable: true,
-                    editable: true,
                     align: 'center'
                 }, {
                     field: 'birthday',
                     title: '生日',
-                    sortable: true,
-                    editable: true,
                     align: 'center'
                 }, {
                     field: 'homeAddress',
                     title: '家庭地址',
-                    sortable: true,
-                    editable: true,
                     align: 'center'
                 }, {
                     field: 'phoneNumber',
                     title: '联系方式',
-                    sortable: true,
-                    editable: true,
                     align: 'center'
                 }, {
                     field: 'familyMembers',
                     title: '家庭成员',
-                    sortable: true,
-                    editable: true,
                     align: 'center',
                     visible: false
                 }, {
                     field: 'familMembersName',
                     title: '家庭成员名字',
-                    sortable: true,
-                    editable: true,
                     align: 'center'
                 },
                     {
                         field: 'comHosId',
                         title: '所属社区机构',
-                        sortable: true,
-                        editable: true,
                         align: 'center',
                         visible: false
                     }, {
                     field: 'comHosName',
                     title: '所属社区机构名字',
-                    sortable: true,
-                    editable: true,
                     align: 'center'
                 }]
             ]
         });
-        // sometimes footer render error.
-        setTimeout(function () {
-            $table.bootstrapTable('resetView');
-        }, 200);
+
         $table.on('check.bs.table uncheck.bs.table ' +
         'check-all.bs.table uncheck-all.bs.table', function () {
             $remove.prop('disabled', !$table.bootstrapTable('getSelections').length);
 
-
-            // save your data, here just save the current page
             selections = getIdSelections();
-            // push or splice the selections if you want to save all data selections
             if ($table.bootstrapTable('getSelections').length == 1) {
                 $update.prop("disabled", false);
                 $updateFamilyNumber.prop("disabled", false);
@@ -396,33 +367,6 @@
                 });
             }
         });
-        $table.on('all.bs.table', function (e, name, args) {
-            console.log(name, args);
-        });
-        $remove.click(function () {
-            var ids = getIdSelections();
-            $table.bootstrapTable('remove', {
-                field: 'id',
-                values: ids
-            });
-            //删除服务器中的数据
-            for (var id = 0; id < ids.length; id++) {
-                $.ajax({
-                    url: "http://localhost:8080/resident/delete.do?id=" + ids[id],
-                    success: function (data) {
-                        if (data.success == true) {
-                            console.log("delete resident " + ids[id] + " success");
-                        }
-                        else {
-                            alert("删除" + id + "失败");
-                        }
-                    }
-                });
-            }
-
-            $remove.prop('disabled', true);
-        });
-
 
         $(window).resize(function () {
             $table.bootstrapTable('resetView', {
@@ -527,6 +471,30 @@
 
 
         var addOrUpdate; //0,新增; 1，修改
+
+        $remove.click(function () {
+            var ids = getIdSelections();
+            $table.bootstrapTable('remove', {
+                field: 'id',
+                values: ids
+            });
+            //删除服务器中的数据
+            for (var id = 0; id < ids.length; id++) {
+                $.ajax({
+                    url: "http://localhost:8080/resident/delete.do?id=" + ids[id],
+                    success: function (data) {
+                        if (data.success == true) {
+                            console.log("delete resident " + ids[id] + " success");
+                        }
+                        else {
+                            alert("删除" + id + "失败");
+                        }
+                    }
+                });
+            }
+
+            $remove.prop('disabled', true);
+        });
 
         $add.click(function () {
             $('#saveOrUpdate').text("新增");

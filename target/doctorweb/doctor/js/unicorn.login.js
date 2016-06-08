@@ -38,40 +38,4 @@ $(document).ready(function(){
         });
     });
     }
-
-    $('#loginbutton').click(function(){
-
-        var username = $('#username').val();
-        if(username == "") {
-            $('#loginwarn').text("用户名为空");
-            return;
-        }
-        var password = $('#password').val();
-        if(password == "") {
-            $('#loginwarn').text("密码为空");
-            return;
-        }
-        var type = $('#type').val();
-        $.ajax({
-            url:"http://localhost:8080/user/login.do?userType="+type+"&nickname="+username+"&password="+password,
-            success:function(data){
-                if(data.success==true){
-                    sessionStorage.setItem("username",username);
-                    sessionStorage.setItem("usertype",type);
-                    sessionStorage.setItem("doctorId",data.data.resDocId);
-                    sessionStorage.setItem("comhisid",data.data.comhisid);
-                    sessionStorage.setItem("comhisname", data.data.comhisname);
-                    if(type == 1) {
-                        window.location = "./index.html";
-                    }
-                    if(type == 0) {
-                        window.location = "./manage-index.html"
-                    }
-                }
-                else{
-                    $('#loginwarn').text(data.message);
-                }
-            }
-          });
-    });
 });

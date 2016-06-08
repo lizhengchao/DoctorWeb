@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
 public class HomeServiceDAOImp extends CommonDAO<HomeServiceDTO, HomeServiceQuery> implements HomeServiceDAO{
     @Override
     public String getPrefix() {
-        return "com.doctor.home_service";
+        return "com.doctor.home_service.";
     }
 }
