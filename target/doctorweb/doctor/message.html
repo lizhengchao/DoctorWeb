@@ -106,6 +106,7 @@
             <label for="answerMessageArea">请输入回复内容</label>
             <textarea id="answerMessageArea" class="form-control" style="min-height: 100px"></textarea>
         </div>
+        <button class="btn btn-primary" id="submit">确认</button>
     </div>
 </div>
 
@@ -122,8 +123,8 @@
             <div class="col-md-12">
                 <label class="mylabel">处理类型</label>
                 <select class="myselect" id="myselect">
-                    <option value="0">待处理</option>
-                    <option value="1">已处理</option>
+                    <option value="0">待回复</option>
+                    <option value="1">已回复</option>
                 </select>
             </div>
         </div>
@@ -154,10 +155,10 @@
                 <th data-field="resName">居民姓名</th>
                 <th data-field="requestMessage" data-visible="false"></th>
                 <th data-field="requestMessageTrim">留言内容</th>
-                <th data-field="answerMessage" data-visible="false"></th>
-                <th data-field="answerMessageTrim">回复内容</th>
                 <th data-field="requestTime" data-formatter="convertTime">留言时间</th>
-                <th data-field="answerTime" data-formatter="isNull">回复时间</th>
+                <th data-field="answerMessage" data-visible="false"></th>
+                <th data-field="answerMessageTrim" data-formatter="isNull">回复内容</th>
+                <th data-field="answerTime" data-formatter="isNullTime">回复时间</th>
             </tr>
             </thead>
         </table>
@@ -186,21 +187,30 @@
         return getSmpFormatDateByLong(value, true);
     }
 
+    function isNullTime(value){
+        if(value==null || value=="null" || value==""){
+            return "未回复";
+        } else {
+            return getSmpFormatDateByLong(value, true);
+        }
+    }
+
     function isNull(value){
         if(value==null || value=="null" || value==""){
             return "未回复";
         } else {
-            return getSmpFormatDateByLong(value, true)
+            return value;
         }
     }
 
     function queryParams(params) {
         params.comHosId = sessionStorage.getItem("comHosId");
         params.docIdAndNull = sessionStorage.getItem("doctorId");
+        params.isHandle = $('#myselect').val();
         return params;
     }
 
-    //table选择事件，此处表示上方三个button可点击
+    //table选择事件，此处表示上方两个个button可点击
     $table.on('check.bs.table uncheck.bs.table ' +
     'check-all.bs.table uncheck-all.bs.table', function () {
         if ($table.bootstrapTable('getSelections').length == 1) {
@@ -208,16 +218,16 @@
             $('#answer').prop("disabled", false);
         } else {
             $('#messageDetail').prop("disabled", true);
-            $('#answer').prop("disabled", false);
+            $('#answer').prop("disabled", true);
         }
     });
 
     //选择类型则刷新表
     $('#myselect').click(function(){
         if($('#myselect').val()==0){
-            $('#answer').hide();
+            $('#answer').prop("disabled", false);
         } else{
-            $('#answer').show();
+            $('#answer').prop("disabled", true);
         }
         $table.bootstrapTable("refresh")
     })
@@ -225,6 +235,26 @@
     $('#messageDetail').click(function(){
         $('#requestMessage').text($table.bootstrapTable('getSelections')[0].requestMessage);
         $('#answerMessage').text($table.bootstrapTable('getSelections')[0].answerMessage);
+    })
+
+    $('#submit').click(function(){
+        $.ajax({
+            url: "http://localhost:8080/messagerecord/answer.do",
+            type: "POST",
+            data: {
+                id: $table.bootstrapTable('getSelections')[0].id,
+                answerMessage: $('#answerMessageArea').val()
+            },
+            success: function(data){
+                if(data.success){
+                    alert("回复成功");
+                    $('#answerModal').hide();
+                    $table.bootstrapTable("refresh");
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
     })
 
 </script>

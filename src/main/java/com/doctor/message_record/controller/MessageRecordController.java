@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -49,6 +50,7 @@ public class MessageRecordController extends CommonController{
                                           @RequestParam(value = "sort", required = false) String sort,
                                           @RequestParam(value = "offset", required = false) Integer offset,
                                           @RequestParam(value = "limit", required = false) Integer limit,
+                                          @RequestParam(value = "isHandle", required = false) Integer isHandle,
                                           @RequestParam(value = "docId", required = false) Integer docId,
                                           @RequestParam(value = "docIdAndNull", required = false) Integer docIdAndNull,
                                           @RequestParam(value = "comHosId", required = false) Integer comHosId) {
@@ -76,6 +78,9 @@ public class MessageRecordController extends CommonController{
         if (null != comHosId){
             messageRecordQuery.setComHosId(comHosId);
         }
+        if (null != isHandle){
+            messageRecordQuery.setIsHandle(isHandle);
+        }
         Result<List> result = messageRecordService.findWithVO(messageRecordQuery);
         if (result.getSuccess()) {
             BootstrapJsonResult bootstrapJsonResult = new BootstrapJsonResult();
@@ -96,6 +101,18 @@ public class MessageRecordController extends CommonController{
     @RequestMapping(value = {"update.do"}, method = RequestMethod.POST)
     @ResponseBody
     public Result update(@ModelAttribute MessageReocrdDTO messageReocrdDTO) {
+        return messageRecordService.update(messageReocrdDTO);
+    }
+
+    @RequestMapping(value = {"answer.do"}, method = RequestMethod.POST)
+    @ResponseBody
+    public Result answer(@ModelAttribute MessageReocrdDTO messageReocrdDTO) {
+        Integer doctorId = (Integer)request1.getSession().getAttribute("doctorId");
+        //将当前医生id存入
+        messageReocrdDTO.setDocId(doctorId);
+        //存入回复时间
+        messageReocrdDTO.setAnswerTime(new Date());
+        messageReocrdDTO.setIsHandle(1);
         return messageRecordService.update(messageReocrdDTO);
     }
 

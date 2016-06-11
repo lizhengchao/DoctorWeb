@@ -21,7 +21,8 @@ import java.util.List;
  */
 
 @Repository("MessageRecordService")
-public class MessageRecordServiceImp extends CommonService<MessageReocrdDTO, MessageRecordQuery, MessageRecordDAO> implements MessageRecordService{
+public class MessageRecordServiceImp extends CommonService<MessageReocrdDTO, MessageRecordQuery, MessageRecordDAO>
+        implements MessageRecordService{
 
     @Resource(name = "MessageRecordDAO")
     private MessageRecordDAO messageRecordDAO;

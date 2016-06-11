@@ -8,6 +8,7 @@
         <result property="resId" column="resId"/>
         <result property="docId" column="docId"/>
         <result property="comHosId" column="comHosId"/>
+        <result property="isHandle" column="isHandle"/>
         <result property="requestInfo" column="requestInfo"/>
         <result property="phoneNumber" column="phoneNumber"/>
         <result property="homeAddress" column="homeAddress"/>
@@ -18,7 +19,7 @@
 
     <!-- 数据库字段 -->
     <sql id="columns">
-        id, resId, docId, comHosId, requestInfo, phoneNumber, homeAddress, medicalRecId, requestTime, solveTime
+        id, resId, docId, comHosId, isHandle, requestInfo, phoneNumber, homeAddress, medicalRecId, requestTime, solveTime
     </sql>
 
     <!-- 查询条件 -->
@@ -30,6 +31,8 @@
                     <if test="comHosId != null"> and comHosId = #{comHosId}</if>
                     <if test="resId != null"> and resId = #{resId}</if>
                     <if test="docId != null"> and docId = #{docId}</if>
+                    <if test="isHandle != null"> and isHandle = #{isHandle}</if>
+                    <if test="docIdAndNull != null"> and (docId = #{docIdAndNull} OR  docId IS NULL )</if>
                 </otherwise>
             </choose>
         </where>
@@ -134,6 +137,9 @@
             </if>
             <if test="comHosId != null">
                 comHosId = #{comHosId, jdbcType=INTEGER},
+            </if>
+            <if test="isHandle != null">
+                isHandle = #{isHandle, jdbcType=INTEGER},
             </if>
             <if test="requestInfo != null">
                 requestInfo = #{requestInfo, jdbcType=VARCHAR},

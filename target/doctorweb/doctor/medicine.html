@@ -97,6 +97,12 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label">药品名称拼音</label>
+                <div class="controls">
+                    <input style="height: 30px" type="text" id="spellingName"/>
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label">药品类型</label>
                 <div class="controls">
                     <select class="myselect" id="type">
@@ -114,7 +120,7 @@
             <div class="control-group">
                 <label class="control-label">厂家</label>
                 <div class="controls">
-                    <input style="height: 30px" type="date" id="factory"/>
+                    <input style="height: 30px" type="text" id="factory"/>
                 </div>
             </div>
             <div class="control-group">
@@ -241,17 +247,8 @@
         return getSmpFormatDateByLong(value, true);
     }
 
-    function isNull(value){
-        if(value==null || value=="null" || value==""){
-            return "未回复";
-        } else {
-            return getSmpFormatDateByLong(value, true)
-        }
-    }
-
     function queryParams(params) {
-        params.comHosId = sessionStorage.getItem("comhosid");
-        params.docId = sessionStorage.getItem("doctorId");
+        params.type = $('#myselect').val();
         return params;
     }
 
@@ -284,9 +281,89 @@
         $table.bootstrapTable("refresh")
     })
 
-    $('#messageDetail').click(function(){
-        $('#requestMessage').text($table.bootstrapTable('getSelections')[0].requestMessage);
-        $('#answerMessage').text($table.bootstrapTable('getSelections')[0].answerMessage);
+    $remove.click(function(){
+        $.ajax({
+            url: "http://localhost:8080/medicine/delete.do?id="+$table.bootstrapTable("getSelections")[0].id,
+            type: "POST",
+            success: function(data){
+                if(data.sucess){
+                    $table.bootstrapTable("refresh");
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
+    })
+
+    var addOrUpdate;
+
+    $add.click(function(){
+        $('#addOrUpdateLabel').text("新增药品");
+        addOrUpdate = 0;
+    })
+
+    $update.click(function(){
+        $('#addOrUpdateLabel').text("修改药品");
+        $('#name').val($table.bootstrapTable("getSelections")[0].name);
+        $('#spellingName').val($table.bootstrapTable("getSelections")[0].spellingName);
+        $('#type').val($table.bootstrapTable("getSelections")[0].type);
+        $('#supplyUnit').val($table.bootstrapTable("getSelections")[0].supplyUnit);
+        $('#factory').val($table.bootstrapTable("getSelections")[0].factory);
+        $('#price').val($table.bootstrapTable("getSelections")[0].price);
+        addOrUpdate = 1;
+    })
+
+    $('#saveOrUpdate').click(function(){
+        //走新增请求
+        if(addOrUpdate = 0){
+            $.ajax({
+                url: "http://localhost:8080/medicine/insert.do",
+                type: "POST",
+                data: {
+                    name: $('#name').val(),
+                    spellingName: $('#spellingName').val(),
+                    type: $('type').val(),
+                    supplyUnit: $('#supplyUnit').val(),
+                    factory: $('#factory').val(),
+                    price: $('#price').val(),
+                    number: 0
+                },
+                success: function(data){
+                    if(data.success){
+                        alert("新增药品成功");
+                        $('#myModal').hide();
+                    } else{
+                        alert(data.message)
+                    }
+                }
+            })
+
+            //走修改请求
+        } else if(addOrUpdate = 1){
+            $.ajax({
+                url: "http://localhost:8080/medicine/update.do",
+                type: "POST",
+                data: {
+                    id: $table.bootstrapTable("getSelections")[0].id,
+                    name: $('#name').val(),
+                    spellingName: $('#spellingName').val(),
+                    type: $('type').val(),
+                    supplyUnit: $('#supplyUnit').val(),
+                    factory: $('#factory').val(),
+                    price: $('#price').val(),
+                    number: 0
+                },
+                success: function(data){
+                    if(data.success){
+                        alert("修改药品成功");
+                        $('#myModal').hide();
+                    } else{
+                        alert(data.message)
+                    }
+                }
+            })
+
+        }
     })
 </script>
 </body>

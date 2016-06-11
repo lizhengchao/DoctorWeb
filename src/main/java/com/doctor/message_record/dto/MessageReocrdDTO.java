@@ -14,6 +14,15 @@ public class MessageReocrdDTO {
     private String answerMessage;
     private Date requestTime;
     private Date answerTime;
+    private Integer isHandle; //删选处理或未处理
+
+    public Integer getIsHandle() {
+        return isHandle;
+    }
+
+    public void setIsHandle(Integer isHandle) {
+        this.isHandle = isHandle;
+    }
 
     public String getAnswerMessage() {
         return answerMessage;

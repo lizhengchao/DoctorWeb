@@ -8,6 +8,7 @@
         <result property="resId" column="resId"/>
         <result property="comHosId" column="comHosId"/>
         <result property="docId" column="docId"/>
+        <result property="isHandle" column="isHandle"/>
         <result property="requestMessage" column="requestMessage"/>
         <result property="answerMessage" column="answerMessage"/>
         <result property="requestTime" column="requestTime"/>
@@ -16,7 +17,7 @@
 
     <!-- 数据库字段 -->
     <sql id="columns">
-        id, resId, comHosId, docId, requestMessage, answerMessage, requestTime, answerTime
+        id, resId, comHosId, docId, isHandle, requestMessage, answerMessage, requestTime, answerTime
     </sql>
 
     <!-- 查询条件 -->
@@ -28,6 +29,7 @@
                     <if test="resId != null"> and resId = #{resId}</if>
                     <if test="comHosId != null"> and comHosId = #{comHosId}</if>
                     <if test="docId != null"> and docId = #{docId}</if>
+                    <if test="isHandle != null"> and isHandle = #{isHandle}</if>
                     <if test="docIdAndNull != null"> and (docId = #{docIdAndNull} OR  docId IS NULL )</if>
                 </otherwise>
             </choose>
@@ -130,6 +132,9 @@
             </if>
             <if test="answerTime != null">
                 answerTime = #{answerTime, jdbcType=VARCHAR},
+            </if>
+            <if test="isHandle != null">
+                isHandle = #{isHandle, jdbcType=INTEGER},
             </if>
         </set>
         WHERE

@@ -10,6 +10,24 @@ public class HomeServiceQuery extends BaseQuery{
     private Integer comHosId;
     private Integer resId;
     private Integer docId;
+    private Integer isHandle;
+    private Integer docIdAndNull;
+
+    public Integer getDocIdAndNull() {
+        return docIdAndNull;
+    }
+
+    public void setDocIdAndNull(Integer docIdAndNull) {
+        this.docIdAndNull = docIdAndNull;
+    }
+
+    public Integer getIsHandle() {
+        return isHandle;
+    }
+
+    public void setIsHandle(Integer isHandle) {
+        this.isHandle = isHandle;
+    }
 
     public Integer getDocId() {
         return docId;

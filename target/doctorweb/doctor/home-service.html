@@ -83,6 +83,32 @@
     <a href="#red-green" style="background-image: url('img/demo/red-green.png');background-repeat: no-repeat;"></a>
 </div>
 
+<div id="messageDetailModal" class="modal">
+    <div class="modal-header">
+        <button data-dismiss="modal" class="close" type="button">×</button>
+        <h3>上门服务请求详情</h3>
+    </div>
+    <div class="modal-body">
+        <ul class="list-unstyled">
+            <li>上门服务请求详情:<mark id="rquestMessageArea"></mark></li>
+        </ul>
+    </div>
+</div>
+
+<div id="answerModal" class="modal">
+    <div class="modal-header">
+        <button data-dismiss="modal" class="close" type="button">×</button>
+        <h3>回复留言</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="medRecId">请输入当次就诊id</label>
+            <input  style="width: 300px;" type="text" class="form-control" id="medRecId">
+        </div>
+        <button class="btn btn-primary" id="submit">确认</button>
+    </div>
+</div>
+
 <div id="content">
     <div id="content-header">
         <h1>上门服务</h1>
@@ -110,36 +136,12 @@
                     <div class="col-md-3">
                         <button id="answer" class="btn btn-primary" hidden="hidden"  href="#answerModal" data-toggle="modal" disabled>完成上门服务</button>
                     </div>
-
-                    <div id="messageDetailModal" class="modal">
-                        <div class="modal-header">
-                            <button data-dismiss="modal" class="close" type="button">×</button>
-                            <h3>上门服务请求详情</h3>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <textarea id="rquestMessageArea" class="form-control" style="min-height: 100px"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="answerModal" class="modal">
-                        <div class="modal-header">
-                            <button data-dismiss="modal" class="close" type="button">×</button>
-                            <h3>回复留言</h3>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="medRecId">请输入当次就诊id</label>
-                                <input type="text" class="form-control" id="medRecId">
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <table id="table"
                    data-toggle="table"
                    data-toolbar="#toolbar"
+                   data-show-refresh="true"
                    data-height="460"
                    data-pagination="true"
                    data-side-pagination="server"
@@ -151,12 +153,13 @@
                     <th data-field="id" data-visible="false"></th>
                     <th data-field="resId" data-visible="false"></th>
                     <th data-field="resName">居民姓名</th>
-                    <th data-field="requestInfo">要求详情</th>
+                    <th data-field="requestInfo" data-visible="false"></th>
+                    <th data-field="requestInfoTrim">要求详情</th>
                     <th data-field="phoneNumber">居民手机号</th>
                     <th data-field="homeAddress">居民住址</th>
                     <th data-field="medicalRecId">上门服务就诊id</th>
                     <th data-field="requestTime" data-formatter="convertTime">要求时间</th>
-                    <th data-field="answerTime" data-formatter="isNull">处理时间时间</th>
+                    <th data-field="solveTime" data-formatter="isNull">处理时间时间</th>
                 </tr>
                 </thead>
             </table>
@@ -190,8 +193,9 @@
     }
 
     function queryParams(params) {
-        params.comHosId = sessionStorage.getItem("comhosid");
-        params.docId = sessionStorage.getItem("doctorId");
+        params.comHosId = sessionStorage.getItem("comHosId");
+        params.docIdAndNull = sessionStorage.getItem("doctorId");
+        params.isHandle = $('#myselect').val();
         return params;
     }
 
@@ -212,15 +216,35 @@
     //选择类型则刷新表
     $('#myselect').click(function(){
         if($('#myselect').val()==0){
-            $('#answer').hide();
+            $('#answer').prop("disabled", false);
         } else{
-            $('#answer').show();
+            $('#answer').prop("disabled", true);
         }
         $table.bootstrapTable("refresh")
     })
 
     $('#messageDetail').click(function(){
         $('#rquestMessageArea').text($table.bootstrapTable('getSelections')[0].requestInfo);
+    })
+
+    $('#submit').click(function(){
+        $.ajax({
+            url: "http://localhost:8080/homeservice/handle.do",
+            type: "POST",
+            data: {
+                id: $table.bootstrapTable('getSelections')[0].id,
+                medicalRecId: $('#medRecId').val()
+            },
+            success: function(data){
+                if(data.success){
+                    alert("已完成");
+                    $('#answerModal').hide();
+                    $table.bootstrapTable("refresh");
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
     })
 </script>
 </body>

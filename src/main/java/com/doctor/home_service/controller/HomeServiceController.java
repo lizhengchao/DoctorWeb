@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,7 +48,10 @@ public class HomeServiceController extends CommonController{
                                           @RequestParam(value = "order", required = false) String order,
                                           @RequestParam(value = "sort", required = false) String sort,
                                           @RequestParam(value = "offset", required = false) Integer offset,
-                                          @RequestParam(value = "limit", required = false) Integer limit) {
+                                          @RequestParam(value = "limit", required = false) Integer limit,
+                                          @RequestParam(value = "isHandle", required = false) Integer isHandle,
+                                          @RequestParam(value = "comHosId", required = false) Integer comHosId,
+                                          @RequestParam(value = "docIdAndNull", required = false) Integer docIdAndNull) {
         HomeServiceQuery homeServiceQuery = new HomeServiceQuery();
         if (null != offset && null != limit) {
             homeServiceQuery.setPaging(true);
@@ -63,7 +67,16 @@ public class HomeServiceController extends CommonController{
         if (null != sort){
             homeServiceQuery.setSort(sort);
         }
-        Result<List<HomeServiceDTO>> result = homeServiceService.find(homeServiceQuery);
+        if (null != comHosId){
+            homeServiceQuery.setComHosId(comHosId);
+        }
+        if (null != docIdAndNull){
+            homeServiceQuery.setDocIdAndNull(docIdAndNull);
+        }
+        if (null != isHandle){
+            homeServiceQuery.setIsHandle(isHandle);
+        }
+        Result<List> result = homeServiceService.findWithVO(homeServiceQuery);
         if (result.getSuccess()) {
             BootstrapJsonResult bootstrapJsonResult = new BootstrapJsonResult();
             bootstrapJsonResult.setTotal(homeServiceService.count(new HomeServiceQuery()).getData());
@@ -83,6 +96,16 @@ public class HomeServiceController extends CommonController{
     @RequestMapping(value = {"update.do"}, method = RequestMethod.POST)
     @ResponseBody
     public Result update(@ModelAttribute HomeServiceDTO homeServiceDTO) {
+        return homeServiceService.update(homeServiceDTO);
+    }
+
+    @RequestMapping(value = {"handle.do"}, method = RequestMethod.POST)
+    @ResponseBody
+    public Result handle(@ModelAttribute HomeServiceDTO homeServiceDTO) {
+        Integer doctorId = (Integer)request1.getSession().getAttribute("doctorId");
+        homeServiceDTO.setDocId(doctorId);
+        homeServiceDTO.setSolveTime(new Date());
+        homeServiceDTO.setIsHandle(1);
         return homeServiceService.update(homeServiceDTO);
     }
 

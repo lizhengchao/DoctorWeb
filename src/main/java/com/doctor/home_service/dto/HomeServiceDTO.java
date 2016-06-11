@@ -10,12 +10,21 @@ public class HomeServiceDTO {
     private Integer comHosId;
     private Integer resId;
     private Integer docId;
+    private Integer isHandle;
     private String requestInfo;
     private Integer phoneNumber;
     private String homeAddress;
     private Integer medicalRecId;
     private Date requestTime;
     private Date solveTime;
+
+    public Integer getIsHandle() {
+        return isHandle;
+    }
+
+    public void setIsHandle(Integer isHandle) {
+        this.isHandle = isHandle;
+    }
 
     public Integer getComHosId() {
         return comHosId;
@@ -95,5 +104,21 @@ public class HomeServiceDTO {
 
     public void setSolveTime(Date solveTime) {
         this.solveTime = solveTime;
+    }
+
+    public HomeServiceDTO(){}
+
+    public HomeServiceDTO(HomeServiceDTO homeServiceDTO) {
+        this.id = homeServiceDTO.id;
+        this.comHosId = homeServiceDTO.comHosId;
+        this.resId = homeServiceDTO.resId;
+        this.docId = homeServiceDTO.docId;
+        this.isHandle = homeServiceDTO.isHandle;
+        this.requestInfo = homeServiceDTO.requestInfo;
+        this.phoneNumber = homeServiceDTO.phoneNumber;
+        this.homeAddress = homeServiceDTO.homeAddress;
+        this.medicalRecId = homeServiceDTO.medicalRecId;
+        this.requestTime = homeServiceDTO.requestTime;
+        this.solveTime = homeServiceDTO.solveTime;
     }
 }
