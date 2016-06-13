@@ -123,7 +123,7 @@
             </form>
         </div>
         <div class="col-sm-5 ml-cont-outer">
-            <form class="my-info-form" id="res-info-form">
+            <form class="my-info-form" id="res-info-form" hidden="hidden">
                 <h3>居民信息信息</h3>
                 <div class="form-group">
                     <label for="realName">真实姓名</label>
@@ -144,9 +144,9 @@
                 </div>
                 <div class="form-group">
                     <label for="phoneNumber">手机号码</label>
-                    <input style="height: 30px" type="date" id="phoneNumber"/>
+                    <input style="height: 30px" type="text" id="phoneNumber"/>
                 </div>
-                <a role="button" class="btn btn-primary" href="javascript:saveInfo();">保存</a>
+                <a role="button" class="btn btn-primary" href="javascript:saveResInfo();">保存</a>
             </form>
         </div>
     </div>
@@ -185,14 +185,18 @@
                     $('#password').val(password);
                     if(identificationId == null || identificationId == ""){
                         $('#identificationIdInfo').show();
+                        return;
                     } else {
                         $('#identificationId').val(identificationId);
+                        $('#res-info-form').show();
                     }
                 } else {
                     alert(data.message);
                 }
             }
         })
+        //已绑定社区医院则显示居民信息
+        getResInfo();
     })
 
     function savePwd(){
@@ -260,6 +264,52 @@
             }
 
         })
+    }
+
+    function getResInfo(){
+        $.ajax({
+            url: "http://localhost:8080/resident/find.do?id="+sessionStorage.getItem("residentId"),
+            type: "GET",
+            success: function(data){
+                if(data.success){
+                    $('#realName').val(data.data[0].name);
+                    if (data.data[0].sex == 0) {
+                        $('input:radio').eq(0).attr('checked', 'true');
+                    } else {
+                        $('input:radio').eq(1).attr('checked', 'true')
+                    }
+                    $("#homeAddress").val(data.data[0].homeAddress);
+                    $("#birthday").val(data.data[0].birthday);
+                    $("#phoneNumber").val(data.data[0].phoneNumber);
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
+    }
+
+    function saveResInfo(){
+        $.ajax({
+            url: "http://localhost:8080/resident/update.do",
+            type: "POST",
+            data: {
+                "id": sessionStorage.getItem("residentId"),
+                "name": $('#realName').val(),
+                "sex": $('input:radio:checked').val(),
+                "homeAddress": $('#homeAddress').val(),
+                "birthday": $("#birthday").val(),
+                "phoneNumber": $("#phoneNumber").val()
+            },
+            success: function (data) {
+                if (data.success == true) {
+                    alert("保存成功");
+                }
+                else {
+                    alert(data.message);
+                    console.info("保存失败");
+                }
+            }
+        });
     }
 </script>
 </body>
