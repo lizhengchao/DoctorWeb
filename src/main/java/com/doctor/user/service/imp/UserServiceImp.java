@@ -101,9 +101,9 @@ public class UserServiceImp extends CommonService<UserDTO, UserQuery,UserDAO>
                 UserVO userVO = new UserVO();
                 userVO.setDTO(userDTO);
                 //登录类型为医生则从医生表中查找社区机构id，并加入VO
-                if (userQuery.getUserType().equals(UserDTO.UserType.doctor.getType())) {
+                if (userVO.getUserType().equals(UserDTO.UserType.doctor.getType())) {
                     DoctorQuery doctorQuery = new DoctorQuery();
-                    doctorQuery.setId(userQuery.getResDocId());
+                    doctorQuery.setId(userVO.getResDocId());
                     DoctorDTO doctorDTO = doctorDAO.get(doctorQuery);
                     if (null != doctorDTO){
                         userVO.setComHosId(doctorDTO.getComHosId());
@@ -116,11 +116,12 @@ public class UserServiceImp extends CommonService<UserDTO, UserQuery,UserDAO>
                         }
                     }
                     //登录类型为居民
-                } else if (userQuery.getUserType().equals(UserDTO.UserType.resident.getType())){
+                } else if (userVO.getUserType().equals(UserDTO.UserType.resident.getType())){
                     ResidentQuery residentQuery = new ResidentQuery();
-                    residentQuery.setId(userQuery.getResDocId());
+                    residentQuery.setId(userVO.getResDocId());
                     ResidentDTO residentDTO = residentDAO.get(residentQuery);
-                    if (null != residentDTO) {
+                    //userVo中 resDocId为空表示该用户还未绑定医院，因而不许返回所属社区医院
+                    if (null != userVO.getResDocId() && null != residentDTO) {
                         userVO.setComHosId(residentDTO.getComHosId());
                         //将所属社区医院名字加入VO
                         CommunityHospitalQuery communityHospitalQuery = new CommunityHospitalQuery();
@@ -160,6 +161,20 @@ public class UserServiceImp extends CommonService<UserDTO, UserQuery,UserDAO>
         } else {
             return new Result<ResidentDTO>(null, false, "您不在该社区中或者您的信息填写有误", 500);
         }
+    }
+
+    @Override
+    public Result<Integer> update(UserDTO temp) {
+        //用户名不能重复
+        if (null != temp.getNickname()){
+            UserQuery userQuery = new UserQuery();
+            userQuery.setNickname(temp.getNickname());
+            UserDTO userDTO = userDAO.get(userQuery);
+            if (null != userDTO && !userDTO.getId().equals(temp.getId())){
+                return new Result<Integer>(null, false, "用户名已存在", 500);
+            }
+        }
+        return super.update(temp);
     }
 
     @Override

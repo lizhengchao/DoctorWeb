@@ -2,6 +2,9 @@ package com.doctor.message_record.service.Imp;
 
 import com.doctor.common.CommonService;
 import com.doctor.common.Result;
+import com.doctor.doctor.dao.DoctorDAO;
+import com.doctor.doctor.dto.DoctorDTO;
+import com.doctor.doctor.dto.DoctorQuery;
 import com.doctor.message_record.dao.MessageRecordDAO;
 import com.doctor.message_record.dto.MessageRecordQuery;
 import com.doctor.message_record.dto.MessageRecordVO;
@@ -30,6 +33,9 @@ public class MessageRecordServiceImp extends CommonService<MessageReocrdDTO, Mes
     @Resource(name = "ResidentDAO")
     private ResidentDAO residentDAO;
 
+    @Resource(name = "DoctorDAO")
+    private DoctorDAO doctorDAO;
+
     @Override
     public MessageRecordDAO getDao() {
         return messageRecordDAO;
@@ -43,12 +49,21 @@ public class MessageRecordServiceImp extends CommonService<MessageReocrdDTO, Mes
             try {
                 for (MessageReocrdDTO messageReocrdDTO: result.getData()){
                     MessageRecordVO messageRecordVO = new MessageRecordVO(messageReocrdDTO);
-                    //取出居民姓名
+                    //塞入居民姓名
                     ResidentQuery residentQuery = new ResidentQuery();
                     residentQuery.setId(messageReocrdDTO.getResId());
                     ResidentDTO residentDTO = residentDAO.get(residentQuery);
                     if (null != residentDTO){
                         messageRecordVO.setResName(residentDTO.getName());
+                    }
+                    //塞入医生姓名
+                    if (messageReocrdDTO.getIsHandle()==1){
+                        DoctorQuery doctorQuery = new DoctorQuery();
+                        doctorQuery.setId(messageReocrdDTO.getDocId());
+                        DoctorDTO doctorDTO = doctorDAO.get(doctorQuery);
+                        if (null != doctorDTO){
+                            messageRecordVO.setDocName(doctorDTO.getName());
+                        }
                     }
                     messageRecordVO.setAnswerMessageTrim(trimMessage(messageRecordVO.getAnswerMessage()));
                     messageRecordVO.setRequestMessageTrim(trimMessage(messageRecordVO.getRequestMessage()));

@@ -42,13 +42,15 @@
 
 <div id="user-nav" class="navbar navbar-inverse"  style="min-height: 32px">
     <ul class="nav btn-group">
-        <li class="btn btn-inverse dropdown" id="menu-messages"><a href="#" data-toggle="dropdown" data-target="#menu-messages" class="dropdown-toggle"><i class="icon icon-cog"></i> <span class="text">个人中心</span> <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                <li><a class="sAdd" title="" href="#">基本信息</a></li>
-                <li><a class="sInbox" title="" href="#">密码</a></li>
-                <li><a class="sOutbox" title="" href="#">个人头衔</a></li>
-            </ul>
-        </li>
+        <li class="btn btn-inverse"><a title="" href="#">
+            <span id="userName" style="color: #049cdb" class="text"></span></a></li>
+        <!--<li class="btn btn-inverse dropdown" id="menu-messages"><a href="#" data-toggle="dropdown" data-target="#menu-messages" class="dropdown-toggle"><i class="icon icon-cog"></i> <span class="text">个人中心</span> <b class="caret"></b></a>-->
+            <!--<ul class="dropdown-menu">-->
+                <!--<li><a class="sAdd" title="" href="#">基本信息</a></li>-->
+                <!--<li><a class="sInbox" title="" href="#">密码</a></li>-->
+                <!--<li><a class="sOutbox" title="" href="#">个人头衔</a></li>-->
+            <!--</ul>-->
+        <!--</li>-->
         <li class="btn btn-inverse"><a title="" href="javascript:logout()"><i class="icon icon-share-alt"></i> <span class="text">注销</span></a></li>
     </ul>
 </div>
@@ -61,8 +63,6 @@
             <ul>
                 <li><a href="resident-base.html">居民基本信息记录</a></li>
                 <li><a href="medical-record.html">居民电子病历记录</a></li>
-                <li><a href="medication-record.html">居民用药记录</a></li>
-                <li><a href="health-data.html">居民体检记录</a></li>
             </ul>
         </li>
         <li><a href="home-service.html"><i class="icon icon-th-list"></i> <span>上门服务</span></a></li>

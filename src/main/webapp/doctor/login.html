@@ -83,7 +83,7 @@
         }
         var type = $('#type').val();
         $.ajax({
-            url: "http://localhost:8080/user/login.do?userType=" + type + "&nickname=" + username +
+            url: "http://localhost:8080/user/login.do?userType=" + type + "&nickname=" +  encodeURI(username) +
                 "&password=" + password +"&isSaveInfo=true",
             success: function (data) {
                 if (data.success == true) {

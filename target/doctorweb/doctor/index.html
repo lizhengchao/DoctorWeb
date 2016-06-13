@@ -15,8 +15,7 @@
     <link rel="stylesheet" href="css/select2.css"/>
     <link rel="stylesheet" href="assets/bootstrap-table/src/bootstrap-table.css">
     <link rel="stylesheet" href="assets/examples.css">
-    <link rel="stylesheet"
-          href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">
+    <link rel="stylesheet" href="css/fileinput.css">
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/my.css">
     <style>
@@ -44,8 +43,9 @@
 
 <div id="user-nav" class="navbar navbar-inverse" style="min-height: 32px">
     <ul class="nav btn-group">
-        <li class="btn btn-inverse"><span id="userName" style="color: #049cdb" class="text"></span></li>
-        <li class="btn btn-inverse dropdown" id="menu-messages"><a href="#" data-toggle="dropdown"
+        <li class="btn btn-inverse"><a title="" href="#">
+            <span id="userName" style="color: #049cdb" class="text"></span></a></li>
+        <!--<li class="btn btn-inverse dropdown" id="menu-messages"><a href="#" data-toggle="dropdown"
                                                                    data-target="#menu-messages" class="dropdown-toggle"><i
                 class="icon icon-cog"></i> <span class="text">个人中心</span> <b class="caret"></b></a>
             <ul class="dropdown-menu">
@@ -53,7 +53,7 @@
                 <li><a class="sInbox" title="" href="#">密码</a></li>
                 <li><a class="sOutbox" title="" href="#">个人头衔</a></li>
             </ul>
-        </li>
+        </li>-->
         <li class="btn btn-inverse"><a title="" href="javascript:logout()"><i class="icon icon-share-alt"></i> <span
                 class="text">注销</span></a></li>
     </ul>
@@ -67,8 +67,6 @@
             <ul>
                 <li><a href="resident-base.html">居民基本信息记录</a></li>
                 <li><a href="medical-record.html">居民电子病历记录</a></li>
-                <li><a href="medication-record.html">居民用药记录</a></li>
-                <li><a href="health-data.html">居民体检记录</a></li>
             </ul>
         </li>
         <li><a href="home-service.html"><i class="icon icon-th-list"></i> <span>上门服务</span></a></li>
@@ -143,7 +141,6 @@
                     </div>
                 </div>
                 <div class="row" style="margin-top: 10px">
-                    <!--todo-->
                     <div class="col-md-12">
                         <div class="btn-group btn-group-justified" role="group" aria-label="...">
                             <div class="btn-group" role="group">
@@ -268,7 +265,7 @@
                 </div>
                 <div class="row" style="margin-top: 10px" hidden="hidden" id="TiJianPage">
                     <div class="col-lg-12">
-                        <form>
+                        <form enctype="multipart/form-data">
                             <div class="form-group">
                                 <div class="col-sm-4">
                                     <label for="statutre">身高</label>
@@ -335,11 +332,6 @@
                                                   placeholder="请输入对患者体检信息的评价"></textarea>
                             </div>
                             <div class="form-group">
-                                <div class="col-sm-4">
-                                    <label for="ImageInput">选择体检图片</label>
-                                    <input type="file" id="ImageInput">
-                                    <button type="button" class="btn btn-default">上传</button>
-                                </div>
                                 <div class="col-sm-3 col-sm-offset-2">
                                     <button type="button" class="btn btn-info btn-large" style="margin-top: 20px"
                                             id="submitTiJian">确认
@@ -347,6 +339,18 @@
                                 </div>
                             </div>
                         </form>
+                        <!--<div class="col-sm-4">-->
+                            <!--<label for="ImageInput">选择体检图片</label>-->
+                            <!--<input type="file" id="ImageInput">-->
+                            <!--<button type="button" class="btn btn-default">上传</button>-->
+                        <!--</div>-->
+                        <!--<form enctype="multipart/form-data" id="uploadForm">
+                            <div id="uploadFileDiv" style="width: 60%;">
+                                <input id="pdFile" name="file" type="file">
+                                <div id="fileError" class="help-block"></div>
+                                <br />
+                            </div>
+                        </form>-->
                     </div>
                 </div>
             </div>
@@ -363,9 +367,106 @@
 <script src="js/select2.min.js"></script>
 <script src="js/jquery.dataTables.min.js"></script>
 <script src="assets/bootstrap-table/src/bootstrap-table.js"></script>
+<script src="js/fileinput.js"></script>
 <script src="assets/ga.js"></script>
 <script src="js/myjs/doctorjs.js"></script>
 <script>
+    /*$("#pdFile").fileinput({
+
+        showPreview : false,
+
+        allowedFileExtensions : [ "zip", "bar", "bpmn", "bpmn20.xml","jpg" ], //限制文件类型
+
+                elErrorContainer : "#fileError",
+
+            browseClass : "btn btn-success",
+
+            browseLabel : "查找文件",
+
+            browseIcon : '<i ></i>',
+
+            removeClass : "btn btn-danger",
+
+            removeLabel : "删除",
+
+            removeIcon : '<i ></i>',
+
+            uploadClass : "btn btn-info",
+
+            uploadLabel : "部署",
+
+            uploadIcon : '<i ></i>'
+
+    });
+
+
+
+    $("#uploadForm").submit(function(event) {
+
+        var formData = new FormData(this); //这里用的是this，如果是Form的话需要Form[0]
+
+        event.preventDefault(); //阻止当前提交事件，自行实现，否则会跳转
+
+        var grid = $('[data-role="pdGrid"]');
+
+        $.ajax({
+
+            url :  'http://localhost:8080/residenthealthdata/uploade.do',
+
+            type : 'POST',
+
+            data : formData,
+
+            contentType : false, //这两个参数需要被定义，否则报错
+
+        processData : false,
+
+                success : function(data) {
+
+            if (data.result == 'success') {
+
+                grid.message({
+
+                    type : 'success',
+
+                    content : '部署成功'
+
+                });
+
+                $("#uploadFileDiv").slideToggle("slow");
+
+                grid.grid('refresh');
+
+            } else {
+
+                grid.message({
+
+                    type : 'error',
+
+                    content : data.result
+
+                });
+
+            }
+
+        },
+
+        error : function() {
+
+            grid.message({
+
+                type : 'error',
+
+                content : '部署失败'
+
+            });
+
+        }
+
+    });
+
+    });*/
+
     var $table = $('#table');
     var $table2 = $('#table2');
     var $table3 = $('#table3');
@@ -384,8 +485,6 @@
 
     $intoYongYao.click(function () {
         if (null == currenMecdicalRecord) {
-            /*todo*/
-            /*all alert need to alter*/
             alert('请先完成病历录入');
             return
         }
@@ -412,7 +511,7 @@
     $resName.keyup(function () {
         $table.bootstrapTable("removeAll");
         $.ajax({
-            url: "http://localhost:8080/resident/findwithbs.do?nameLike=" + $resName.val(),
+            url: "http://localhost:8080/resident/findwithbs.do?nameLike=" + encodeURI($resName.val())+ "&comHosId="+sessionStorage.getItem("comHosId"),
             type: "GET",
             success: function (data) {
                 $table.bootstrapTable("append", data.rows);
@@ -476,6 +575,10 @@
     var $saveOrUpdateMedicine = $('#saveOrUpdateMedicine');
     var currentMedicineId;
 
+    $add.click(function(){
+
+    })
+
     $medicationName.keyup(function () {
         $table3.bootstrapTable("removeAll");
         $.ajax({
@@ -498,7 +601,7 @@
 
     $saveOrUpdateMedicine.click(function () {
         $.ajax({
-            url: "http://localhost:8080/medicationrecord/insert.do",
+            url: "http://localhost:8080/medicationrecord/usemidicine.do",
             type: "POST",
             data: {
                 "medicalRecId": currenMecdicalRecord,
@@ -508,10 +611,11 @@
             },
             success: function (data) {
                 if (data.success) {
-                    alert("新增药物成功");
+                    alert("新增用药记录成功");
+                    $table2.bootstrapTable("refresh");
                     $('#myModal').hide();
                 } else {
-                    alert("新增药物失败" + data.message);
+                    alert("新增用药记录失败" + data.message);
                 }
             }
         })

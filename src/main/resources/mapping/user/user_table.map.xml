@@ -114,7 +114,7 @@
     </insert>
 
     <!-- 更新 -->
-    <update id="update" parameterType="com.doctor.community_hospital.dto.CommunityHospitalDTO">
+    <update id="update" parameterType="com.doctor.user.dto.UserDTO">
         UPDATE user_table
         <set>
             <if test="userType != null">

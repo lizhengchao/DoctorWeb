@@ -5,6 +5,7 @@ package com.doctor.message_record.dto;
  */
 public class MessageRecordVO extends MessageReocrdDTO{
     private String resName;
+    private String docName;
     private String requestMessageTrim;
     private String answerMessageTrim;
 
@@ -34,5 +35,13 @@ public class MessageRecordVO extends MessageReocrdDTO{
 
     public MessageRecordVO(MessageReocrdDTO messageReocrdDTO) {
         super(messageReocrdDTO);
+    }
+
+    public String getDocName() {
+        return docName;
+    }
+
+    public void setDocName(String docName) {
+        this.docName = docName;
     }
 }

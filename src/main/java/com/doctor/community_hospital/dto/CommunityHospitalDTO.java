@@ -12,7 +12,7 @@ public class CommunityHospitalDTO implements Serializable{
     private String name;
     private String description;
     private String address;
-    private Long phoneNumber;
+    private String phoneNumber;
     private Date createTime;
     private Date modifyTime;
 
@@ -64,11 +64,11 @@ public class CommunityHospitalDTO implements Serializable{
         this.modifyTime = modifyTime;
     }
 
-    public Long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(Long phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 }

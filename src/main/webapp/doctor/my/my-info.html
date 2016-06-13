@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="../css/select2.css"/>
     <link rel="stylesheet" href="../assets/bootstrap-table/src/bootstrap-table.css">
     <link rel="stylesheet" href="../assets/examples.css">
-    <link rel="stylesheet" href="../css/my.css">
     <link rel="stylesheet" href="../css/main.min.css">
     <style>
 
@@ -38,11 +37,11 @@
                         </div>
                         <div class="form-group has-error">
                             <label for="newPwd">新密码</label>
-                            <input type="password" class="form-control" id="newPwd" placeholder="新密码，至少6位">
+                            <input type="password" class="form-control" id="newPwd" placeholder="新密码，至少3位">
                         </div>
                         <div class="form-group has-error">
                             <label for="rePwd">重新输入新密码</label>
-                            <input type="password" class="form-control" id="rePwd" placeholder="新密码，至少6位">
+                            <input type="password" class="form-control" id="rePwd" placeholder="新密码，至少3位">
                         </div>
                         <a role="button" class="btn btn-primary" href="javascript:savePwd();">保存</a>
                     </form>
@@ -73,7 +72,6 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li><a id="nameLi" style="color: #3c763d" href="#"></a></li>
-                    <li><a href="#">查找医院、医生</a></li>
                     <li id="loginLi"><a href="#" data-toggle="modal" data-target="#loginModal">登录</a></li>
                     <li id="registerLi"><a href="#" data-toggle="modal" data-target="#registerModal">注册</a></li>
                     <li id="serviceLi" style="display: none"><a href="message.html">个人服务</a></li>
@@ -103,20 +101,16 @@
                 </li>
             </ul>
         </div>
-        <div class="col-sm-10 ml-cont-outer">
+        <div class="col-sm-5 ml-cont-outer">
             <form class="my-info-form" id="my-info-form">
-                <div id="mail-tips" style="display:none;" class="alert alert-danger alert-dismissible fade in" role="alert"></div>
-
-                <div class="alert alert-danger alert-dismissible fade in" role="alert" id="my-info-err">
-                    <span id="my-info-err-cont"></span>
-                </div>
+                <h3>基本信息</h3>
                 <div class="form-group">
                     <label for="nickname">昵称</label>
                     <input type="text" class="form-control" id="nickname" placeholder="昵称">
                 </div>
                 <div class="form-group">
                     <label for="password">密码</label>
-                    <input type="text" class="form-control" id="password" readonly="true">
+                    <input type="password" class="form-control" id="password" readonly="true">
                     <a href="#" data-toggle="modal" data-target="#updatePWDModal" style=" color: #3169b0; text-decoration: underline; border: none;">修改密码</a>
                 </div>
                 <div class="form-group">
@@ -125,6 +119,33 @@
                     <a href="binding-hospital.html" id="identificationIdInfo" hidden="hidden" style=" color: #3169b0; text-decoration: underline; border: none;">您还未绑定社区医院号，前往绑定</a>
                 </div>
 
+                <a role="button" class="btn btn-primary" href="javascript:saveInfo();">保存</a>
+            </form>
+        </div>
+        <div class="col-sm-5 ml-cont-outer">
+            <form class="my-info-form" id="res-info-form" hidden="hidden">
+                <h3>居民信息信息</h3>
+                <div class="form-group">
+                    <label for="realName">真实姓名</label>
+                    <input type="text" class="form-control" id="realName" placeholder="您的真实姓名">
+                </div>
+                <div class="form-group">
+                    <label>性别</label>
+                    <input type="radio" name="sex" value="0" checked="true"/>男
+                    <input type="radio" name="sex" value="1" checked="false"/>女
+                </div>
+                <div class="form-group">
+                    <label for="birthday">生日</label>
+                    <input style="height: 30px" type="date" id="birthday"/>
+                </div>
+                <div class="form-group">
+                    <label for="homeAddress">家庭地址</label>
+                    <input style="height: 30px" type="text" id="homeAddress"/>
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">手机号码</label>
+                    <input style="height: 30px" type="text" id="phoneNumber"/>
+                </div>
                 <a role="button" class="btn btn-primary" href="javascript:saveInfo();">保存</a>
             </form>
         </div>
@@ -166,7 +187,20 @@
                         $('#identificationIdInfo').show();
                     } else {
                         $('#identificationId').val(identificationId);
+                        $('#res-info-form').show();
                     }
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
+
+        $.ajax({
+            url: "http://localhost:8080/resident/find.do?id="+sessionStorage.getItem("residentId"),
+            type: "GET",
+            success: function(data){
+                if(data.success){
+
                 } else {
                     alert(data.message);
                 }
@@ -189,7 +223,7 @@
                     if(data.success){
                         alert("保存成功");
                         $('#updatePWDModal').hide();
-                        $('#password').val(newPwd);
+                        window.location = "./my-info.html";
                     } else {
                         $('#pwd-info-err').css("display", "block");
                         $('#pwd-info-err-cont').text(data.message);
@@ -200,7 +234,7 @@
     }
 
     function verifyPwd(oldPwd, newPwd, rePwd){
-        if(oldPwd.length<=6){
+        if(oldPwd.length<3){
             $('#pwd-info-err-cont').text("原密码错误");
             return false;
         }
@@ -208,11 +242,37 @@
             $('#pwd-info-err-cont').text("请输入两次相同的密码");
             return false;
         }
-        if(newPwd.length<=6 || rePwd.length<=6){
-            $('#pwd-info-err-cont').text("两次密码都应大于6位");
+        if(newPwd.length<3 || rePwd.length<3){
+            $('#pwd-info-err-cont').text("两次密码都不能小于3位");
             return false;
         }
         return true;
+    }
+
+    function saveInfo(){
+        var nickname = $('#nickname').val();
+        //未更改则直接返回
+        if(nickname == sessionStorage.getItem("userName")){
+            return;
+        }
+        $.ajax({
+            url: "http://localhost:8080/user/update.do",
+            type: "POST",
+            data:{
+                id: userId = sessionStorage.getItem("userId"),
+                nickname: nickname
+            },
+            success: function(data){
+                if(data.success){
+                    alert("修改成功");
+                    sessionStorage.setItem("userName",$('#nickname').val());
+                    window.location = "./my-info.html"
+                } else{
+                    alert(data.message);
+                }
+            }
+
+        })
     }
 </script>
 </body>

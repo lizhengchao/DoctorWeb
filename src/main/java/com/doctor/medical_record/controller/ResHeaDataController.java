@@ -9,8 +9,10 @@ import com.doctor.medical_record.service.MedicalRecServcie;
 import com.doctor.medical_record.service.ResHeaDataService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
@@ -50,5 +52,22 @@ public class ResHeaDataController {
         ResHeaDataQuery resHeaDataQuery = new ResHeaDataQuery();
         resHeaDataQuery.setId(id);
         return  resHeaDataService.delete(resHeaDataQuery);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = {"uploade.do"}, method = RequestMethod.POST)
+    public Result uploadFile(@RequestParam MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+
+        try {
+            InputStream fileInputStream = file.getInputStream();
+        } catch (Exception e) {
+            System.out.print("部署流程时发生错误");
+            e.printStackTrace();
+        }
+        System.out.println("success");
+
+        return new Result();
+
     }
 }

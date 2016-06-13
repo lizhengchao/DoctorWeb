@@ -53,7 +53,8 @@ public class MessageRecordController extends CommonController{
                                           @RequestParam(value = "isHandle", required = false) Integer isHandle,
                                           @RequestParam(value = "docId", required = false) Integer docId,
                                           @RequestParam(value = "docIdAndNull", required = false) Integer docIdAndNull,
-                                          @RequestParam(value = "comHosId", required = false) Integer comHosId) {
+                                          @RequestParam(value = "comHosId", required = false) Integer comHosId,
+                                          @RequestParam(value = "resId", required = false) Integer resId) {
         MessageRecordQuery messageRecordQuery = new MessageRecordQuery();
         if (null != offset && null != limit) {
             messageRecordQuery.setPaging(true);
@@ -80,6 +81,9 @@ public class MessageRecordController extends CommonController{
         }
         if (null != isHandle){
             messageRecordQuery.setIsHandle(isHandle);
+        }
+        if (null != resId){
+            messageRecordQuery.setResId(resId);
         }
         Result<List> result = messageRecordService.findWithVO(messageRecordQuery);
         if (result.getSuccess()) {

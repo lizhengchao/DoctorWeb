@@ -29,7 +29,7 @@ $(document).ready(function () {
         success: function(data){
             //用户已登录则修改导航栏内容
             if(data.success){
-                $('userName').val(sessionStorage.getItem("username"));
+                $('#userName').text("hi! "+sessionStorage.getItem("username"));
             } else {
                 window.location = "./login.html";
             }

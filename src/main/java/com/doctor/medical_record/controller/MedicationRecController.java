@@ -33,6 +33,12 @@ public class MedicationRecController extends CommonController{
         return medicationRecService.insert(medicationRecDTO);
     }
 
+    @RequestMapping(value = {"usemidicine.do"}, method = RequestMethod.POST)
+    @ResponseBody
+    public Result usemidicine(@ModelAttribute MedicationRecDTO medicationRecDTO) {
+        return medicationRecService.useMedicine(medicationRecDTO);
+    }
+
     @RequestMapping(value = {"find.do"}, method = RequestMethod.GET)
     @ResponseBody
     public Result find(@RequestParam(value = "medicalRecId", required = true)Integer medicalRecId){

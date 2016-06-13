@@ -1,6 +1,7 @@
 package com.doctor.community_hospital.controller;
 
 import com.doctor.common.BootstrapJsonResult;
+import com.doctor.common.CommonController;
 import com.doctor.common.Result;
 import com.doctor.community_hospital.dto.CommunityHospitalDTO;
 import com.doctor.community_hospital.dto.CommunityHospitalQuery;
@@ -21,7 +22,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(value = "communityhospital")
-public class CommunityHospitalController {
+public class CommunityHospitalController extends CommonController{
 
     @Resource(name = "CommunityHospitalService")
     private CommunityHospitalService communityHospitalService;
@@ -54,7 +55,7 @@ public class CommunityHospitalController {
             communityHospitalQuery.setPageSize(limit);
         }
         if(null != search){
-            communityHospitalQuery.setVagueValue(search);
+            communityHospitalQuery.setVagueValue(encodeStr(search));
         }
         if(null != order){
             communityHospitalQuery.setOrder(order);

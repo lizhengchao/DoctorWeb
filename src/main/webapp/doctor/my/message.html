@@ -12,42 +12,25 @@
     <link rel="stylesheet" href="../css/select2.css"/>
     <link rel="stylesheet" href="../assets/bootstrap-table/src/bootstrap-table.css">
     <link rel="stylesheet" href="../assets/examples.css">
-    <link rel="stylesheet" href="../css/my.css">
     <link rel="stylesheet" href="../css/main.min.css">
+    <link rel="stylesheet" href="../css/unicorn.main.css">
     <style>
-
     </style>
 </head>
 <body>
-<div class="modal fade bs-example-mod" role="dialog" aria-labelledby="updatePWDModalLabel" id="updatePWDModal">
+<div class="modal fade bs-example-mod" role="dialog" aria-labelledby="messageListModalLabel" id="messageListModal">
     <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content" style="width: 422px;">
+        <div class="modal-content" style="width: 440px;">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="updatePWDModalLabel">修改密码</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="messageListModalLabel">我的留言记录</h4>
             </div>
             <div class="modal-body">
-                <div class="col-sm-10 ml-cont-outer">
-                    <form class="my-info-form" id="pwd-info-form">
-                        <div class="alert alert-danger alert-dismissible fade in" role="alert" id="pwd-info-err"
-                             style="display: block;">
-                            <span id="pwd-info-err-cont"></span>
+                <div class="col-sm-12 ml-cont-outer">
+                    <div class="chat-messages" id="chat-messages">
+                        <div id="chat-messages-inner">
                         </div>
-                        <div class="form-group has-error">
-                            <label for="oldPwd">原密码</label>
-                            <input type="password" class="form-control" id="oldPwd" placeholder="原密码">
-                        </div>
-                        <div class="form-group has-error">
-                            <label for="newPwd">新密码</label>
-                            <input type="password" class="form-control" id="newPwd" placeholder="新密码，至少6位">
-                        </div>
-                        <div class="form-group has-error">
-                            <label for="rePwd">重新输入新密码</label>
-                            <input type="password" class="form-control" id="rePwd" placeholder="新密码，至少6位">
-                        </div>
-                        <a role="button" class="btn btn-primary" href="javascript:savePwd();">保存</a>
-                    </form>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -76,7 +59,6 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li><a id="nameLi" style="color: #3c763d" href="#"></a></li>
-                    <li><a href="#">查找医院、医生</a></li>
                     <li id="loginLi"><a href="#" data-toggle="modal" data-target="#loginModal">登录</a></li>
                     <li id="registerLi"><a href="#" data-toggle="modal" data-target="#registerModal">注册</a></li>
                     <li id="serviceLi" style="display: none"><a href="message.html">个人服务</a></li>
@@ -126,10 +108,12 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-8 col-md-offset-2">
+                <div class="col-md-4 col-md-offset-2">
                     <div class="control-group">
                         <div class="controls">
                             <button style="margin-top: 20px" type="button" class="btn btn-primary" id="submit">确认</button>
+                            <button style="margin-top: 20px; margin-left: 30px" type="button" class="btn btn-primary"
+                                    data-toggle="modal" data-target="#messageListModal" id="messageList">我的留言记录</button>
                         </div>
                     </div>
                 </div>
@@ -148,12 +132,17 @@
 <script src="../assets/ga.js"></script>
 <script src="../js/myjs/converttime.js"></script>
 <script src="../js/myjs/residentjs.js"></script>
+<script src="../js/myjs/myjs.js"></script>
 <script>
     var userId;
     var userName;
     var $docSelect = $('#docSelect');
 
     $(document).ready(function () {
+        if(!hasBing()){
+            alert("您还未绑定社区医院，无法使用该功能，立即前往绑定吧！")
+            window.location = "./binding-hospital.html";
+        }
         $('#currentComHosName').text(sessionStorage.getItem("comHosName"));
         appendDoctorList()
     })
@@ -195,8 +184,40 @@
                 }
             }
         })
-
     })
+
+    $('#messageList').click(function(){
+        $('#chat-messages-inner').empty();
+        $.ajax({
+            url: "http://localhost:8080/messagerecord/findwithbs.do?resId="+sessionStorage.getItem("residentId"),
+            type: "GET",
+            success: function(data){
+                appendMessageList(data);
+            }
+        })
+    })
+
+    function appendMessageList(data){
+        //留言列表的一列
+        var str = "<p class='user-you' style='display: block;'>"+
+        "<span class='msg-block'><strong>{0}</strong>"+
+        "<span class='time'>{1}</span><span class='msg'>{2}</span></span></p>";
+
+        for(var i=0; i<data.rows.length; i++){
+            //居民留言内容
+            var str1 = str.format("你的留言", convertTime(data.rows[i].requestTime), data.rows[i].requestMessage);
+            $('#chat-messages-inner').append(str1);
+            //医生回复内容
+            if(data.rows[i].isHandle==1){
+                var str2 = str.format(data.rows[i].docName+"医生的回复", convertTime(data.rows[i].answerTime), data.rows[i].answerMessage);
+                $('#chat-messages-inner').append(str2);
+            }
+        }
+    }
+
+    function convertTime(value){
+        return getSmpFormatDateByLong(value, true);
+    }
 
 
 </script>

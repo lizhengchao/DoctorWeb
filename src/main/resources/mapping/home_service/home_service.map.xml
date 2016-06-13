@@ -15,11 +15,12 @@
         <result property="medicalRecId" column="medicalRecId"/>
         <result property="requestTime" column="requestTime"/>
         <result property="solveTime" column="solveTime"/>
+        <result property="appointment" column="appointment"/>
     </resultMap>
 
     <!-- 数据库字段 -->
     <sql id="columns">
-        id, resId, docId, comHosId, isHandle, requestInfo, phoneNumber, homeAddress, medicalRecId, requestTime, solveTime
+        id, resId, docId, comHosId, isHandle, requestInfo, phoneNumber, homeAddress, medicalRecId, requestTime, solveTime, appointment
     </sql>
 
     <!-- 查询条件 -->
@@ -97,6 +98,9 @@
             <if test="medicalRecId != null">
                 medicalRecId,
             </if>
+            <if test="appointment != null">
+                appointment,
+            </if>
             requestTime,
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -113,13 +117,16 @@
                 #{requestInfo, jdbcType=VARCHAR},
             </if>
             <if test="phoneNumber != null">
-                #{phoneNumber, jdbcType=INTEGER},
+                #{phoneNumber, jdbcType=VARCHAR},
             </if>
             <if test="homeAddress != null">
                 #{homeAddress, jdbcType=VARCHAR},
             </if>
             <if test="medicalRecId != null">
                 #{medicalRecId, jdbcType=INTEGER},
+            </if>
+            <if test="appointment != null">
+                #{appointment, jdbcType=VARCHAR},
             </if>
             now(),
         </trim>
@@ -145,7 +152,7 @@
                 requestInfo = #{requestInfo, jdbcType=VARCHAR},
             </if>
             <if test="phoneNumber != null">
-                phoneNumber = #{phoneNumber, jdbcType=INTEGER},
+                phoneNumber = #{phoneNumber, jdbcType=VARCHAR},
             </if>
             <if test="homeAddress != null">
                 homeAddress = #{homeAddress, jdbcType=VARCHAR},
@@ -155,6 +162,9 @@
             </if>
             <if test="solveTime != null">
                 solveTime = #{solveTime, jdbcType=VARCHAR},
+            </if>
+            <if test="appointment != null">
+                appointment = #{appointment, jdbcType=VARCHAR},
             </if>
         </set>
         WHERE

@@ -12,11 +12,20 @@ public class HomeServiceDTO {
     private Integer docId;
     private Integer isHandle;
     private String requestInfo;
-    private Integer phoneNumber;
+    private String phoneNumber;
     private String homeAddress;
     private Integer medicalRecId;
     private Date requestTime;
     private Date solveTime;
+    private String appointment;
+
+    public String getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(String appointment) {
+        this.appointment = appointment;
+    }
 
     public Integer getIsHandle() {
         return isHandle;
@@ -66,11 +75,11 @@ public class HomeServiceDTO {
         this.medicalRecId = medicalRecId;
     }
 
-    public Integer getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(Integer phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -120,5 +129,6 @@ public class HomeServiceDTO {
         this.medicalRecId = homeServiceDTO.medicalRecId;
         this.requestTime = homeServiceDTO.requestTime;
         this.solveTime = homeServiceDTO.solveTime;
+        this.appointment = homeServiceDTO.appointment;
     }
 }

@@ -16,8 +16,6 @@
     <link rel="stylesheet" href="css/select2.css"/>
     <link rel="stylesheet" href="assets/bootstrap-table/src/bootstrap-table.css">
     <link rel="stylesheet" href="assets/examples.css">
-    <link rel="stylesheet"
-          href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">
     <link rel="stylesheet" href="css/buttons.css">
     <style>
         /*新的bootstrap中.modal样式不适用，因而在此处强制写死*/
@@ -56,15 +54,17 @@
 
 <div id="user-nav" class="navbar navbar-inverse"  style="min-height: 32px">
     <ul class="nav btn-group">
-        <li class="btn btn-inverse dropdown" id="menu-messages"><a href="#" data-toggle="dropdown"
-                                                                   data-target="#menu-messages" class="dropdown-toggle"><i
-                class="icon icon-cog"></i> <span class="text">个人中心</span> <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                <li><a class="sAdd" title="" href="#">基本信息</a></li>
-                <li><a class="sInbox" title="" href="#">密码</a></li>
-                <li><a class="sOutbox" title="" href="#">个人头衔</a></li>
-            </ul>
-        </li>
+        <li class="btn btn-inverse"><a title="" href="#">
+            <span id="userName" style="color: #049cdb" class="text"></span></a></li>
+        <!--<li class="btn btn-inverse dropdown" id="menu-messages"><a href="#" data-toggle="dropdown"-->
+                                                                   <!--data-target="#menu-messages" class="dropdown-toggle"><i-->
+                <!--class="icon icon-cog"></i> <span class="text">个人中心</span> <b class="caret"></b></a>-->
+            <!--<ul class="dropdown-menu">-->
+                <!--<li><a class="sAdd" title="" href="#">基本信息</a></li>-->
+                <!--<li><a class="sInbox" title="" href="#">密码</a></li>-->
+                <!--<li><a class="sOutbox" title="" href="#">个人头衔</a></li>-->
+            <!--</ul>-->
+        <!--</li>-->
         <li class="btn btn-inverse"><a title="" href="javascript:logout()"><i class="icon icon-share-alt"></i> <span
                 class="text">注销</span></a></li>
     </ul>
@@ -78,8 +78,6 @@
             <ul>
                 <li><a href="resident-base.html">居民基本信息记录</a></li>
                 <li><a href="medical-record.html">居民电子病历记录</a></li>
-                <li><a href="medication-record.html">居民用药记录</a></li>
-                <li><a href="health-data.html">居民体检记录</a></li>
             </ul>
         </li>
         <li><a href="home-service.html"><i class="icon icon-th-list"></i> <span>上门服务</span></a></li>
@@ -97,6 +95,48 @@
     <a href="#blue" style="background-color: #2D2F57;"></a>
     <a href="#red" style="background-color: #673232;"></a>
     <a href="#red-green" style="background-image: url('img/demo/red-green.png');background-repeat: no-repeat;"></a>
+</div>
+
+<div id="medicalDetailModal" class="modal">
+    <div class="modal-header">
+        <button data-dismiss="modal" class="close" type="button">×</button>
+        <h3>病历详情</h3>
+    </div>
+    <div class="modal-body">
+        <ul class="list-unstyled">
+            <li>居民姓名: <mark id="resNameShow"></mark></li>
+            <li>&nbsp;</li>
+            <li>居民主诉: <mark id="chiefComplaint"></mark></li>
+            <li>&nbsp;</li>
+            <li>医生姓名: <mark id="docName"></mark></li>
+            <li>&nbsp;</li>
+            <li>医疗建议: <mark id="suggest"></mark></li>
+            <li>&nbsp;</li>
+            <li>就诊时间: <mark id="createTime"></mark></li>
+        </ul>
+    </div>
+</div>
+<div id="medicationDetailModal" class="modal">
+    <div class="modal-header">
+        <button data-dismiss="modal" class="close" type="button">×</button>
+        <h3>用药详情</h3>
+    </div>
+    <div class="modal-body">
+        <div class="bs-example" data-example-id="unstyled-list">
+            <ul class="list-unstyled" id="medicationDetailShow">
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="heaDataModal" class="modal">
+    <div class="modal-header">
+        <button data-dismiss="modal" class="close" type="button">×</button>
+        <h3>体检详情</h3>
+    </div>
+    <div class="modal-body">
+        <ul id="heaDataShow" class="list-unstyled">
+        </ul>
+    </div>
 </div>
 
 <div id="content">
@@ -129,52 +169,10 @@
                     <button id="medicalDetail" href="#medicalDetailModal" data-toggle="modal" class="btn btn-primary" disabled>查看病历详情</button>
                 </div>
                 <div class="col-md-4">
-                    <button id="medicationDetail" href="#medicationDetailModal" data-toggle="modal" class="btn btn-primary" disabled>查看就诊详情</button>
+                    <button id="medicationDetail" href="#medicationDetailModal" data-toggle="modal" class="btn btn-primary" disabled>查看用药详情</button>
                 </div>
                 <div class="col-md-4">
                     <button id="heaDataDetail" href="#heaDataModal" data-toggle="modal" class="btn btn-primary" disabled>查看体检详情</button>
-                </div>
-
-                <div id="medicalDetailModal" class="modal">
-                    <div class="modal-header">
-                        <button data-dismiss="modal" class="close" type="button">×</button>
-                        <h3>病历详情</h3>
-                    </div>
-                    <div class="modal-body">
-                        <ul class="list-unstyled">
-                            <li>居民姓名: <mark id="resNameShow"></mark></li>
-                            <li>&nbsp;</li>
-                            <li>居民主诉: <mark id="chiefComplaint"></mark></li>
-                            <li>&nbsp;</li>
-                            <li>医生姓名: <mark id="docName"></mark></li>
-                            <li>&nbsp;</li>
-                            <li>医疗建议: <mark id="suggest"></mark></li>
-                            <li>&nbsp;</li>
-                            <li>就诊时间: <mark id="createTime"></mark></li>
-                        </ul>
-                    </div>
-                </div>
-                <div id="medicationDetailModal" class="modal">
-                    <div class="modal-header">
-                        <button data-dismiss="modal" class="close" type="button">×</button>
-                        <h3>用药详情</h3>
-                    </div>
-                    <div class="modal-body">
-                        <div class="bs-example" data-example-id="unstyled-list">
-                            <ul class="list-unstyled" id="medicationDetailShow">
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div id="heaDataModal" class="modal">
-                    <div class="modal-header">
-                        <button data-dismiss="modal" class="close" type="button">×</button>
-                        <h3>体检详情</h3>
-                    </div>
-                    <div class="modal-body">
-                        <ul id="heaDataShow" class="list-unstyled">
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>
@@ -231,7 +229,7 @@
                     field: 'id',
                     rowspan: 2,
                     align: 'center',
-                    valign: 'middle',
+                    valign: 'middle'
                 }, {
                     title: '病历信息',
                     colspan: 10,

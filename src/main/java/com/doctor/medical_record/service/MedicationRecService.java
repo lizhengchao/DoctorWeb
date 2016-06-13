@@ -13,4 +13,6 @@ import java.util.List;
 public interface MedicationRecService extends Service<MedicationRecDTO, MedicationRecQuery>{
 
     public Result<List> findResultVO(MedicationRecQuery medicationRecQuery);
+
+    public Result<Boolean> useMedicine(MedicationRecDTO medicationRecDTO);
 }

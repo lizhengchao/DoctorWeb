@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="css/select2.css" />
     <link rel="stylesheet" href="assets/bootstrap-table/src/bootstrap-table.css">
     <link rel="stylesheet" href="assets/examples.css">
-    <link rel="stylesheet" href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/my.css">
     <style>
@@ -25,7 +24,7 @@
             position: fixed;
             top: 10%;
             left: 50%;
-            bottom: 40%;;
+            bottom: 20%;
             width: 560px;
             margin-left: -280px;
             background-color: #fff;
@@ -43,13 +42,15 @@
 
 <div id="user-nav" class="navbar navbar-inverse"  style="min-height: 32px">
     <ul class="nav btn-group">
-        <li class="btn btn-inverse dropdown" id="menu-messages"><a href="#" data-toggle="dropdown" data-target="#menu-messages" class="dropdown-toggle"><i class="icon icon-cog"></i> <span class="text">个人中心</span> <b class="caret"></b></a>
+        <li class="btn btn-inverse"><a title="" href="#">
+            <span id="userName" style="color: #049cdb" class="text"></span></a></li>
+        <!--<li class="btn btn-inverse dropdown" id="menu-messages"><a href="#" data-toggle="dropdown" data-target="#menu-messages" class="dropdown-toggle"><i class="icon icon-cog"></i> <span class="text">个人中心</span> <b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li><a class="sAdd" title="" href="#">基本信息</a></li>
                 <li><a class="sInbox" title="" href="#">密码</a></li>
                 <li><a class="sOutbox" title="" href="#">个人头衔</a></li>
             </ul>
-        </li>
+        </li>-->
         <li class="btn btn-inverse"><a title="" href="javascript:logout()"><i class="icon icon-share-alt"></i> <span class="text">注销</span></a></li>
     </ul>
 </div>
@@ -62,8 +63,6 @@
             <ul>
                 <li><a href="resident-base.html">居民基本信息记录</a></li>
                 <li><a href="medical-record.html">居民电子病历记录</a></li>
-                <li><a href="medication-record.html">居民用药记录</a></li>
-                <li><a href="health-data.html">居民体检记录</a></li>
             </ul>
         </li>
         <li><a href="home-service.html"><i class="icon icon-th-list"></i> <span>上门服务</span></a></li>
@@ -112,7 +111,7 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label">单位</label>
+                <label class="control-label">规格</label>
                 <div class="controls">
                     <input style="height: 30px" type="text" id="supplyUnit"/>
                 </div>
@@ -135,7 +134,7 @@
         </form>
     </div>
 </div>
-<div id="inComingModal" class="modal">
+<div id="incomingModal" class="modal" style="bottom:50%">
     <div class="modal-header">inCominN
         <button data-dismiss="modal" class="close" type="button">×</button>
         <h3>药品入库</h3>
@@ -145,13 +144,16 @@
             <div class="control-group">
                 <label class="control-label">入库数量</label>
                 <div class="controls">
-                    <input style="height: 30px" type="text" id="inComingNumber"/>
+                    <input style="height: 30px" type="text" id="incomingNumber"/>
                 </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-primary" id="incomingSubmit">确认</button>
             </div>
         </form>
     </div>
 </div>
-<div id="outGoingModal" class="modal">
+<div id="outgoingModal" class="modal" style="bottom:50%">
     <div class="modal-header">
         <button data-dismiss="modal" class="close" type="button">×</button>
         <h3>药品出库</h3>
@@ -161,8 +163,11 @@
             <div class="control-group">
                 <label class="control-label">出库数量</label>
                 <div class="controls">
-                    <input style="height: 30px" type="text" id="outGongNumber"/>
+                    <input style="height: 30px" type="text" id="outgoingNumber"/>
                 </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-primary" id="outgoingSubmit">确认</button>
             </div>
         </form>
     </div>
@@ -196,10 +201,10 @@
             <button id="update" href="#myModal" data-toggle="modal" class="btn btn-warning" disabled>
                 <i class="glyphicon glyphicon-pencil"></i> 修改药品种类
             </button>
-            <button id="incoming" href="#inComingModal" data-toggle="modal" class="btn btn-warning" disabled>
+            <button id="incoming" href="#incomingModal" data-toggle="modal" class="btn btn-warning" disabled>
                 <i class="glyphicon glyphicon-pencil"></i> 药品入库
             </button>
-            <button id="outgoing" href="#outGoingModal" data-toggle="modal" class="btn btn-warning" disabled>
+            <button id="outgoing" href="#outgoingModal" data-toggle="modal" class="btn btn-warning" disabled>
                 <i class="glyphicon glyphicon-pencil"></i> 药品出库
             </button>
         </div>
@@ -219,7 +224,7 @@
                 <th data-field="name">药品名称</th>
                 <th data-field="spellingName">药品名称拼音</th>
                 <th data-field="type" data-visible="false">药品类型</th>
-                <th data-field="supplyUnit">单位</th>
+                <th data-field="supplyUnit">规格</th>
                 <th data-field="factory">生产厂家</th>
                 <th data-field="number">数量</th>
                 <th data-field="price">价格</th>
@@ -284,9 +289,9 @@
     $remove.click(function(){
         $.ajax({
             url: "http://localhost:8080/medicine/delete.do?id="+$table.bootstrapTable("getSelections")[0].id,
-            type: "POST",
+            type: "GET",
             success: function(data){
-                if(data.sucess){
+                if(data.success){
                     $table.bootstrapTable("refresh");
                 } else {
                     alert(data.message);
@@ -299,11 +304,22 @@
 
     $add.click(function(){
         $('#addOrUpdateLabel').text("新增药品");
+        $('#saveOrUpdate').text("新增");
+
+        $('#name').val("");
+        $('#spellingName').val("");
+        $('#type').val("");
+        $('#supplyUnit').val("");
+        $('#factory').val("");
+        $('#price').val("");
+
         addOrUpdate = 0;
     })
 
     $update.click(function(){
         $('#addOrUpdateLabel').text("修改药品");
+        $('#saveOrUpdate').text("修改");
+
         $('#name').val($table.bootstrapTable("getSelections")[0].name);
         $('#spellingName').val($table.bootstrapTable("getSelections")[0].spellingName);
         $('#type').val($table.bootstrapTable("getSelections")[0].type);
@@ -315,14 +331,14 @@
 
     $('#saveOrUpdate').click(function(){
         //走新增请求
-        if(addOrUpdate = 0){
+        if(addOrUpdate == 0){
             $.ajax({
                 url: "http://localhost:8080/medicine/insert.do",
                 type: "POST",
                 data: {
                     name: $('#name').val(),
                     spellingName: $('#spellingName').val(),
-                    type: $('type').val(),
+                    type: $('#type').val(),
                     supplyUnit: $('#supplyUnit').val(),
                     factory: $('#factory').val(),
                     price: $('#price').val(),
@@ -331,6 +347,7 @@
                 success: function(data){
                     if(data.success){
                         alert("新增药品成功");
+                        $table.bootstrapTable("refresh");
                         $('#myModal').hide();
                     } else{
                         alert(data.message)
@@ -339,7 +356,7 @@
             })
 
             //走修改请求
-        } else if(addOrUpdate = 1){
+        } else if(addOrUpdate == 1){
             $.ajax({
                 url: "http://localhost:8080/medicine/update.do",
                 type: "POST",
@@ -347,7 +364,7 @@
                     id: $table.bootstrapTable("getSelections")[0].id,
                     name: $('#name').val(),
                     spellingName: $('#spellingName').val(),
-                    type: $('type').val(),
+                    type: $('#type').val(),
                     supplyUnit: $('#supplyUnit').val(),
                     factory: $('#factory').val(),
                     price: $('#price').val(),
@@ -356,6 +373,7 @@
                 success: function(data){
                     if(data.success){
                         alert("修改药品成功");
+                        $table.bootstrapTable("refresh");
                         $('#myModal').hide();
                     } else{
                         alert(data.message)
@@ -364,6 +382,49 @@
             })
 
         }
+    })
+
+    $('#incomingSubmit').click(function(){
+        var addNumber = $table.bootstrapTable("getSelections")[0].number + $('#incomingNumber').val();
+        $.ajax({
+            url: "http://localhost:8080/medicine/update.do",
+            type: "POST",
+            data: {
+                id: $table.bootstrapTable("getSelections")[0].id,
+                number : addNumber
+            },
+            success: function(data){
+                if(data.success){
+                    alert("入库成功");
+                    $('#incomingModal').hide();
+                    $table.bootstrapTable("refresh");
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
+
+    })
+
+    $('#outgoingSubmit').click(function(){
+        var addNumber = $table.bootstrapTable("getSelections")[0].number - $('#outgoingNumber').val();
+        $.ajax({
+            url: "http://localhost:8080/medicine/update.do",
+            type: "POST",
+            data: {
+                id: $table.bootstrapTable("getSelections")[0].id,
+                number : addNumber
+            },
+            success: function(data){
+                if(data.success){
+                    alert("出库成功");
+                    $('#outgoingModal').hide();
+                    $table.bootstrapTable("refresh");
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
     })
 </script>
 </body>

@@ -100,5 +100,6 @@ public class MessageReocrdDTO {
         this.answerMessage = messageReocrdDTO.answerMessage;
         this.requestTime = messageReocrdDTO.requestTime;
         this.answerTime = messageReocrdDTO.answerTime;
+        this.isHandle = messageReocrdDTO.isHandle;
     }
 }

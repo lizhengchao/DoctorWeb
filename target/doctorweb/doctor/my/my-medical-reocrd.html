@@ -28,7 +28,7 @@
             position: fixed;
             top: 10%;
             left: 50%;
-            bottom: 40%;;
+            bottom: 20%;
             width: 560px;
             margin-left: -280px;
             background-color: #fff;
@@ -70,7 +70,6 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li><a id="nameLi" style="color: #3c763d" href="#"></a></li>
-                    <li><a href="#">查找医院、医生</a></li>
                     <li id="loginLi"><a href="#" data-toggle="modal" data-target="#loginModal">登录</a></li>
                     <li id="registerLi"><a href="#" data-toggle="modal" data-target="#registerModal">注册</a></li>
                     <li id="serviceLi" style="display: none"><a href="message.html">个人服务</a></li>
@@ -206,6 +205,13 @@
 <script src="../js/myjs/converttime.js"></script>
 <script src="../js/myjs/residentjs.js"></script>
 <script>
+    $(document).ready(function () {
+        if(!hasBing()){
+            alert("您还未绑定社区医院，无法使用该功能，立即前往绑定吧！")
+            window.location = "./binding-hospital.html";
+        }
+    })
+
     var userId;
     var userName;
 
@@ -288,7 +294,7 @@
             url: "http://localhost:8080/residenthealthdata/find.do?medicalRecId="+$table.bootstrapTable('getSelections')[0].id,
             type: "GET",
             success: function(data){
-                $('#medicationDetailShow').empty();
+                $('#heaDataShow').empty();
                 if(data.success){
                     if(data.data.length==0){
                         $("#heaDataShow").append("<li>本次病历没有体检记录</li>");

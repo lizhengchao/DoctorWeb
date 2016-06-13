@@ -73,7 +73,6 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li><a id="nameLi" style="color: #3c763d" href="#"></a></li>
-                    <li><a href="#">查找医院、医生</a></li>
                     <li id="loginLi"><a href="#" data-toggle="modal" data-target="#loginModal">登录</a></li>
                     <li id="registerLi"><a href="#" data-toggle="modal" data-target="#registerModal">注册</a></li>
                     <li id="serviceLi" style="display: none"><a href="message.html">个人服务</a></li>
@@ -134,6 +133,14 @@
                 </div>
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2">
+                        <div class="form-group">
+                            <label for="appointment">您预约的时间？</label>
+                            <input type="text" class="form-control" id="appointment" placeholder="请精确到上下午"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
                         <div class="control-group">
                             <div class="controls">
                                 <button style="margin-top: 20px" type="button" class="btn btn-default" id="submit">确认</button>
@@ -162,7 +169,11 @@
     var $docSelect = $('#docSelect');
 
     $(document).ready(function () {
-        appendDoctorList()
+        appendDoctorList();
+        if(!hasBing()){
+            alert("您还未绑定社区医院，无法使用该功能，立即前往绑定吧！")
+            window.location = "./binding-hospital.html";
+        }
     })
 
     function appendDoctorList(){
@@ -185,26 +196,25 @@
     }
 
     $('#submit').click(function(){
-        var doctorId;
-        if($docSelect.val()==""){
-            doctorId = null;
-        } else {
-            doctorId = $docSelect.val();
-        }
         $.ajax({
             url: "http://localhost:8080/homeservice/insert.do",
             type: "POST",
             data: {
                 "resId":sessionStorage.getItem("residentId"),
-                "docId":doctorId,
+                "docId":$docSelect.val(),
                 "comHosId":sessionStorage.getItem("comHosId"),
                 "requestInfo": $('#requestInfo').val(),
                 "phoneNumber": $('#phoneNumber').val(),
-                "homeAddress": $('#homeAddress').val()
+                "homeAddress": $('#homeAddress').val(),
+                "appointment": $('#appointment').val()
             },
             success: function(data){
                 if(data.success){
-                    alert("留言成功");
+                    alert("预约成功");
+                    $('#requestInfo').val("");
+                    $('#phoneNumber').val("");
+                    $('#homeAddress').val("");
+                    $('#appointment').val("");
                 } else {
                     alert(data.message);
                 }

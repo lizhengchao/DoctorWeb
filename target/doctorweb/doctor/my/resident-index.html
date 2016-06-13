@@ -12,10 +12,8 @@
     <link rel="stylesheet" href="../css/select2.css"/>
     <link rel="stylesheet" href="../assets/bootstrap-table/src/bootstrap-table.css">
     <link rel="stylesheet" href="../assets/examples.css">
-    <link rel="stylesheet" href="../css/my.css">
     <link rel="stylesheet" href="../css/main.min.css">
     <style>
-
     </style>
 </head>
 <body>
@@ -59,10 +57,11 @@
                     <input type="text" class="form-control" id="modalRegisterName" placeholder="昵称">
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" id="modalRegisterPassword" placeholder="密码(不少于6位)">
+                    <input type="password" class="form-control" id="modalRegisterPassword" placeholder="密码(不少于3位)">
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control" id="modalReRegisterPassword" placeholder="请再次输入密码">
+                    <p id="registerModalErrorInfo" style="color: #882a25; margin-top: 10px"></p>
                 </div>
             </div>
             <div class="modal-footer">
@@ -90,7 +89,6 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li><a id="nameLi" style="color: #3c763d" href="#"></a></li>
-                    <li><a href="#">查找医院、医生</a></li>
                     <li id="loginLi"><a href="#" data-toggle="modal" data-target="#loginModal">登录</a></li>
                     <li id="registerLi"><a href="#" data-toggle="modal" data-target="#registerModal">注册</a></li>
                     <li id="serviceLi" style="display: none"><a href="message.html">个人服务</a></li>
@@ -185,6 +183,46 @@
     }
 
     function register(){
+        var modalRegisterName = $('#modalRegisterName').val();
+        var modalRegisterPassword = $('#modalRegisterPassword').val();
+        var modalReRegisterPassword = $('#modalReRegisterPassword').val();
+        if(modalRegisterPassword.length<3){
+            $('#registerModalErrorInfo').text("密码长度不能小于3位");
+            return;
+        }
+        if(modalRegisterPassword != modalReRegisterPassword){
+            $('#registerModalErrorInfo').text("两次密码不同，请重新输入");
+            return;
+        }
+        $.ajax({
+            url: "http://localhost:8080/user/insertResident.do?userType=2&nickname="+modalRegisterName+"&password="+modalRegisterPassword,
+            type: "GET",
+            success: function(data){
+                if(data.success){
+                    alert("注册成功！");
+                    /*注册成功后直接登录*/
+                    $.ajax({
+                        url: "http://localhost:8080/user/login.do?userType="+2+"&nickname="+modalRegisterName+"&password="+modalRegisterPassword+"&isSaveInfo="+true,
+                        type: "GET",
+                        success: function(data2){
+                            if(data.success){
+                                sessionStorage.setItem("userId", data2.data.id);
+                                sessionStorage.setItem("userName", data2.data.nickname);
+                                sessionStorage.setItem("residentId", data2.data.resDocId);
+                                sessionStorage.setItem("comHosId", data2.data.comHosId);
+                                sessionStorage.setItem("comHosName", data2.data.comHosName);
+                                window.location = "./resident-index.html"
+
+                            } else {
+                                $('#registerModalErrorInfo').text(data2.message);
+                            }
+                        }
+                    })
+                } else {
+                    $('#registerModalErrorInfo').text(data.message);
+                }
+            }
+        })
 
     }
 </script>

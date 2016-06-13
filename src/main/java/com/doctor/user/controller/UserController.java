@@ -13,10 +13,7 @@ import com.doctor.user.dto.UserVO;
 import com.doctor.user.service.UserService;
 import com.sun.javafx.binding.StringFormatter;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -37,15 +34,17 @@ public class UserController extends CommonController{
     @RequestMapping(value = {"haslogin.do"}, method = RequestMethod.GET)
     @ResponseBody
     public Result hasLogin() {
-        UserDTO userDTO = new UserDTO();
+        UserVO userVO = new UserVO();
         HttpSession session = request1.getSession();
         if (null == session.getAttribute("userId")) {
             return new Result(null, false, "用户还未登录", 500);
         } else {
-            userDTO.setId((Integer) session.getAttribute("userId"));
-            userDTO.setNickname((String) session.getAttribute("nickname"));
-            userDTO.setResDocId((Integer)session.getAttribute("residentId"));
-            return Result.buildSuccessResult(userDTO);
+            userVO.setId((Integer) session.getAttribute("userId"));
+            userVO.setNickname((String) session.getAttribute("nickname"));
+            userVO.setResDocId((Integer)session.getAttribute("residentId"));
+            userVO.setComHosName((String)session.getAttribute("comHosName"));
+            userVO.setComHosId((Integer)session.getAttribute("comHosId"));
+            return Result.buildSuccessResult(userVO);
         }
     }
 
@@ -57,7 +56,7 @@ public class UserController extends CommonController{
                         @RequestParam(value = "isSaveInfo", required = false)boolean isSaveInfo){
         UserQuery userQuery = new UserQuery();
         userQuery.setUserType(userType);
-        userQuery.setNickname(nickname);
+        userQuery.setNickname(encodeStr(nickname));
         userQuery.setPassword(password);
         Result<UserVO> result = userService.login(userQuery);
 
@@ -141,7 +140,7 @@ public class UserController extends CommonController{
         userDTO.setIdentificationId(identificationId);
         userDTO.setNickname(nickname);
         userDTO.setPassword(password);
-        return userService.insert(userDTO);
+        return userService.registerResidentUser(userDTO);
     }
 
     //更新密码
@@ -221,25 +220,30 @@ public class UserController extends CommonController{
         return new BootstrapJsonResult();
     }
 
-   /* @RequestMapping(value = {"get.do"}, method = RequestMethod.GET)
-    @ResponseBody
-    public Result get(){
-        UserQuery userQuery = new UserQuery();
-        return  userService.get(userQuery);
-    }*/
-
     //管理员或自身权限
-    @RequestMapping(value = {"update.do"}, method = RequestMethod.GET)
+    //！！！若调用此方法更新user所绑定的resDocId请传入userType！！！
+    @RequestMapping(value = {"update.do"}, method = RequestMethod.POST)
     @ResponseBody
-    public Result update(@RequestParam(value = "id", required = true) Integer id,
-                         @RequestParam(value = "nickname", required = false) String nickname,
-                         @RequestParam(value = "password", required = false) String password,
-                         @RequestParam(value = "identificationId", required = false) String identificationId) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(id);
-        userDTO.setNickname(nickname);
-        userDTO.setPassword(password);
-        userDTO.setIdentificationId(identificationId);
+    public Result update(@ModelAttribute UserDTO userDTO) {
+        HttpSession session = request1.getSession();
+        //更新成功后将session中相应地信息更新
+        if (null != userDTO.getNickname()){
+            session.setAttribute("nickname",userDTO.getNickname());
+        }
+        if (null != userDTO.getId()){
+            session.setAttribute("userId", userDTO.getId());
+        }
+        if (null != userDTO.getResDocId()){
+            if (null == userDTO.getUserType()){
+                return  new Result(null, false, "请传入用户类型", 500);
+            } else {
+                if (userDTO.getUserType().equals(UserDTO.UserType.doctor.getType())){
+                    session.setAttribute("doctorId",userDTO.getResDocId());
+                } else if (userDTO.getUserType().equals(UserDTO.UserType.resident.getType())){
+                    session.setAttribute("residentId", userDTO.getResDocId());
+                }
+            }
+        }
         return userService.update(userDTO);
     }
 

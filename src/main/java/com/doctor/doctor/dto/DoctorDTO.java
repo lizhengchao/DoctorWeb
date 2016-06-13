@@ -9,8 +9,8 @@ import java.util.Date;
 public class DoctorDTO implements Serializable{
     private Integer id;
     private String name;
-    private Long identificationId;
-    private Long phoneNumber;
+    private String identificationId;
+    private String phoneNumber;
     private String phyQuaCerCode;
     private String phyPraCerCode;
     private Integer title;
@@ -61,11 +61,11 @@ public class DoctorDTO implements Serializable{
         this.id = id;
     }
 
-    public Long getIdentificationId() {
+    public String getIdentificationId() {
         return identificationId;
     }
 
-    public void setIdentificationId(Long identificationId) {
+    public void setIdentificationId(String identificationId) {
         this.identificationId = identificationId;
     }
 
@@ -85,11 +85,11 @@ public class DoctorDTO implements Serializable{
         this.name = name;
     }
 
-    public Long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(Long phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

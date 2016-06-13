@@ -120,10 +120,10 @@
                 #{name, jdbcType=VARCHAR},
             </if>
             <if test="identificationId != null">
-                #{identificationId, jdbcType=INTEGER},
+                #{identificationId, jdbcType=VARCHAR},
             </if>
             <if test="phoneNumber != null">
-                #{phoneNumber, jdbcType=INTEGER},
+                #{phoneNumber, jdbcType=VARCHAR},
             </if>
             <if test="phyQuaCerCode != null">
                 #{phyQuaCerCode, jdbcType=VARCHAR},
@@ -159,10 +159,10 @@
                 name = #{name, jdbcType=VARCHAR},
             </if>
             <if test="identificationId != null">
-                identificationId = #{identificationId, jdbcType=INTEGER},
+                identificationId = #{identificationId, jdbcType=VARCHAR},
             </if>
             <if test="phoneNumber != null">
-                phoneNumber = #{phoneNumber, jdbcType=INTEGER},
+                phoneNumber = #{phoneNumber, jdbcType=VARCHAR},
             </if>
             <if test="phyQuaCerCode != null">
                 phyQuaCerCode = #{phyQuaCerCode, jdbcType=VARCHAR},

@@ -56,4 +56,29 @@ public class MedicationRecServiceImp extends CommonService<MedicationRecDTO, Med
             return result;
         }
     }
+
+    @Override
+    public Result<Boolean> useMedicine(MedicationRecDTO medicationRecDTO) {
+        try {
+            MedicineQuery medicineQuery = new MedicineQuery();
+            medicineQuery.setId(medicationRecDTO.getMedicineId());
+            MedicineDTO medicineDTO = medicineDAO.get(medicineQuery);
+            if (null != medicineDTO){
+                if (medicineDTO.getNumber()<medicationRecDTO.getAmount()){
+                    return new Result<Boolean>(false, false, "该药品库存不足", 500);
+                } else {
+                    //修改库存并保存记录
+                    medicineDTO.setNumber(medicineDTO.getNumber()-medicationRecDTO.getAmount());
+                    medicineDAO.update(medicineDTO);
+                    super.insert(medicationRecDTO);
+                    return Result.buildSuccessResult("true");
+                }
+            } else {
+                return new Result<Boolean>(false, false, "不存在该种药", 500);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return new Result<Boolean>(false, false, "服务器内部异常", 500);
+        }
+    }
 }

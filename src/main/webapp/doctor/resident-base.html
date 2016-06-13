@@ -15,8 +15,6 @@
     <link rel="stylesheet" href="css/select2.css"/>
     <link rel="stylesheet" href="assets/bootstrap-table/src/bootstrap-table.css">
     <link rel="stylesheet" href="assets/examples.css">
-    <!--<link rel="stylesheet"-->
-          <!--href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">-->
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/my.css">
     <style>
@@ -60,15 +58,17 @@
 
 <div id="user-nav" class="navbar navbar-inverse"  style="min-height: 32px">
     <ul class="nav btn-group">
-        <li class="btn btn-inverse dropdown" id="menu-messages"><a href="#" data-toggle="dropdown"
-                                                                   data-target="#menu-messages" class="dropdown-toggle"><i
-                class="icon icon-cog"></i> <span class="text">个人中心</span> <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                <li><a class="sAdd" title="" href="#">基本信息</a></li>
-                <li><a class="sInbox" title="" href="#">密码</a></li>
-                <li><a class="sOutbox" title="" href="#">个人头衔</a></li>
-            </ul>
-        </li>
+        <li class="btn btn-inverse"><a title="" href="#">
+            <span id="userName" style="color: #049cdb" class="text"></span></a></li>
+        <!--<li class="btn btn-inverse dropdown" id="menu-messages"><a href="#" data-toggle="dropdown"-->
+                                                                   <!--data-target="#menu-messages" class="dropdown-toggle"><i-->
+                <!--class="icon icon-cog"></i> <span class="text">个人中心</span> <b class="caret"></b></a>-->
+            <!--<ul class="dropdown-menu">-->
+                <!--<li><a class="sAdd" title="" href="#">基本信息</a></li>-->
+                <!--<li><a class="sInbox" title="" href="#">密码</a></li>-->
+                <!--<li><a class="sOutbox" title="" href="#">个人头衔</a></li>-->
+            <!--</ul>-->
+        <!--</li>-->
         <li class="btn btn-inverse"><a title="" href="javascript:logout()"><i class="icon icon-share-alt"></i> <span
                 class="text">注销</span></a></li>
     </ul>
@@ -82,8 +82,6 @@
             <ul>
                 <li><a href="resident-base.html">居民基本信息记录</a></li>
                 <li><a href="medical-record.html">居民电子病历记录</a></li>
-                <li><a href="medication-record.html">居民用药记录</a></li>
-                <li><a href="health-data.html">居民体检记录</a></li>
             </ul>
         </li>
         <li><a href="home-service.html"><i class="icon icon-th-list"></i> <span>上门服务</span></a></li>
@@ -101,6 +99,114 @@
     <a href="#blue" style="background-color: #2D2F57;"></a>
     <a href="#red" style="background-color: #673232;"></a>
     <a href="#red-green" style="background-image: url('img/demo/red-green.png');background-repeat: no-repeat;"></a>
+</div>
+
+<div id="myModal" class="modal">
+    <div class="modal-header">
+        <button data-dismiss="modal" class="close" type="button">×</button>
+        <h3 id="addOrUpdateLabel"></h3>
+    </div>
+    <div class="modal-body">
+        <form action="#" class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label">姓名</label>
+
+                <div class="controls">
+                    <input style="height: 30px" type="text" name="name"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">性别</label>
+
+                <div class="controls">
+                    <input type="radio" name="sex" value="0" checked="true"/>男
+                    <input type="radio" name="sex" value="1" checked="false"/>女
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">身份证号</label>
+
+                <div class="controls">
+                    <input style="height: 30px" type="text" name="identificationId"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">生日</label>
+
+                <div class="controls">
+                    <input style="height: 30px" type="date" name="birthday"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">家庭地址</label>
+
+                <div class="controls">
+                    <input style="height: 30px" type="text" name="homeAddress"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">手机号码</label>
+
+                <div class="controls">
+                    <input style="height: 30px" type="text" name="phoneNumber"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">所属社区医院</label>
+
+                <div class="controls">
+                    <input name="comHosId" style="display:none"/>
+                    <input style="height: 30px" type="text" name="comHosName" readonly="true"/>
+
+                    <p id="phoneNumberError" style="color: #882a25"></p>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-primary" id="saveOrUpdate"></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--修改家庭成员弹出框-->
+<div id="myModal2" class="modal">
+    <div class="modal-header">
+        <button data-dismiss="modal" class="close" type="button">×</button>
+        <h3>修改家庭成员信息</h3>
+    </div>
+    <div class="modal-body">
+        <form action="#" class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label">所属家庭成员</label>
+                <div class="controls">
+                    <input type="text" style="display: none" id="familyNumbersId">
+                    <input style="height: 30px" type="text" id="familyNumbersName"/>
+                    <button class="btn btn-info" id="familyNumbersSubmit">确定</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">查找成员</label>
+                <div class="controls">
+                    <input type="text" id="searchFamilyNumbers">
+                </div>
+            </div>
+            <div class="control-group">
+                <table id="table2"
+                       data-toggle="table"
+                       data-height="460"
+                       data-query-params="queryParams">
+                    <thead>
+                    <tr>
+                        <th data-field="state" data-checkbox="true"></th>
+                        <th data-field="id"></th>
+                        <th data-field="name"></th>
+                    </tr>
+                    </thead>
+                </table>
+
+            </div>
+        </form>
+    </div>
 </div>
 
 <div id="content">
@@ -127,119 +233,13 @@
             <button id="updateFamilyNumber" href="#myModal2" data-toggle="modal" class="btn btn-warning" disabled>
                 <i class="glyphicon glyphicon-pencil"></i> 修改家庭成员信息
             </button>
-            <select class="myselect" id="comhosselect">
-            </select>
-
-            <div id="myModal" class="modal">
-                <div class="modal-header">
-                    <button data-dismiss="modal" class="close" type="button">×</button>
-                    <h3 id="addOrUpdateLabel"></h3>
-                </div>
-                <div class="modal-body">
-                    <form action="#" class="form-horizontal">
-                        <div class="control-group">
-                            <label class="control-label">姓名</label>
-
-                            <div class="controls">
-                                <input style="height: 30px" type="text" name="name"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label">性别</label>
-
-                            <div class="controls">
-                                <input type="radio" name="sex" value="0" checked="true"/>男
-                                <input type="radio" name="sex" value="1" checked="false"/>女
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label">身份证号</label>
-
-                            <div class="controls">
-                                <input style="height: 30px" type="text" name="identificationId"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label">生日</label>
-
-                            <div class="controls">
-                                <input style="height: 30px" type="date" name="birthday"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label">家庭地址</label>
-
-                            <div class="controls">
-                                <input style="height: 30px" type="text" name="homeAddress"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label">手机号码</label>
-
-                            <div class="controls">
-                                <input style="height: 30px" type="text" name="phoneNumber"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label">所属社区医院</label>
-
-                            <div class="controls">
-                                <input name="comHosId" style="display:none"/>
-                                <input style="height: 30px" type="text" name="comHosName" readonly="true"/>
-
-                                <p id="phoneNumberError" style="color: #882a25"></p>
-                            </div>
-                        </div>
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-primary" id="saveOrUpdate"></button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <!--修改家庭成员弹出框-->
-            <div id="myModal2" class="modal">
-                <div class="modal-header">
-                    <button data-dismiss="modal" class="close" type="button">×</button>
-                    <h3>修改家庭成员信息</h3>
-                </div>
-                <div class="modal-body">
-                    <form action="#" class="form-horizontal">
-                        <div class="control-group">
-                            <label class="control-label">所属家庭成员</label>
-                            <div class="controls">
-                                <input type="text" style="display: none" id="familyNumbersId">
-                                <input style="height: 30px" type="text" id="familyNumbersName"/>
-                                <button class="btn btn-info" id="familyNumbersSubmit">确定</button>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label">查找成员</label>
-                            <div class="controls">
-                                <input type="text" id="searchFamilyNumbers">
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <table id="table2"
-                                   data-toggle="table"
-                                   data-height="460">
-                                <thead>
-                                <tr>
-                                    <th data-field="state" data-checkbox="true"></th>
-                                    <th data-field="id"></th>
-                                    <th data-field="name"></th>
-                                </tr>
-                                </thead>
-                            </table>
-
-                        </div>
-                    </form>
-                </div>
-            </div>
+            <!--<select class="myselect" id="comhosselect">-->
+            <!--</select>-->
         </div>
         <table id="table"
                data-toolbar="#toolbar"
                data-search="true"
-               data-detail-view="true"
+               data-show-refres="true"
                data-detail-formatter="detailFormatter"
                data-minimum-count-columns="2"
                data-show-pagination-switch="true"
@@ -272,8 +272,8 @@
             $remove = $('#remove'),
             $add = $('#add'),
             $update = $('#update'),
-            selections = [],
-            $comhosselect = $('#comhosselect');
+            selections = [];
+//            $comhosselect = $('#comhosselect');
 
     function initTable() {
         $table.bootstrapTable({
@@ -377,7 +377,7 @@
 
 
     function queryParams(params) {
-        params.comHosId = $comhosselect.val();
+        params.comHosId = sessionStorage.getItem("comHosId");
         return params;
     }
 
@@ -398,7 +398,7 @@
     $searchFamilyNumbers.keyup(function(){
         $table2.bootstrapTable("removeAll");
         $.ajax({
-            url: "http://localhost:8080/resident/findwithbs.do?nameLike="+$searchFamilyNumbers.val(),
+            url: "http://localhost:8080/resident/findwithbs.do?nameLike="+$searchFamilyNumbers.val()+"&comHosId="+sessionStorage.getItem("comHosId"),
             type: "GET",
             success: function (data) {
                     $table2.bootstrapTable('append', data.rows);
@@ -428,7 +428,8 @@
             },
             success: function (data) {
                 if (data.success == true) {
-                    window.location = "./resident-base.html";
+                    alert("修改成功")
+                    $('#myModal2').hide();
                 }
                 else {
                     $('#phoneNumberError').text(data.message);
@@ -439,7 +440,7 @@
     })
 
     $(document).ready(function () {
-        appendCommunityHospitalSelect();
+        /*appendCommunityHospitalSelect();
         //拼接出社区选项
         function appendCommunityHospitalSelect() {
             var currentHospital = sessionStorage.getItem("comhisid");
@@ -463,11 +464,11 @@
                     }
                 }
             });
-        }
+        }*/
 
-        $comhosselect.change(function () {
-            $table.bootstrapTable('refresh')
-        })
+//        $comhosselect.change(function () {
+//            $table.bootstrapTable('refresh')
+//        })
 
 
         var addOrUpdate; //0,新增; 1，修改
@@ -499,9 +500,16 @@
         $add.click(function () {
             $('#saveOrUpdate').text("新增");
             $('#addOrUpdateLabel').text("新增居民");
-            $("[name='comHosName']").val(sessionStorage.getItem("comhisname"));
-            $("[name='comHosId']").val(sessionStorage.getItem("comhisid"));
+            $("[name='name']").val("");
+            $('input:radio').eq(0).attr('checked', 'true');
+            $('input:radio').eq(1).attr('checked', 'false')
+            $("[name='identificationId']").val("");
+            $("[name='homeAddress']").val("");
+            $("[name='birthday']").val("");
+            $("[name='phoneNumber']").val("");
 
+            $("[name='comHosName']").val(sessionStorage.getItem("comHosName"));
+            $("[name='comHosId']").val(sessionStorage.getItem("comHosId"));
             addOrUpdate = 0;
         })
 

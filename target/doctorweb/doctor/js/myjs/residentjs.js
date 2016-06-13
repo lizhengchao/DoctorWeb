@@ -8,13 +8,18 @@ $(document).ready(function () {
         success: function(data){
             //用户已登录则修改导航栏内容
             if(data.success){
+                sessionStorage.setItem("userId", data.data.id);
+                sessionStorage.setItem("userName", data.data.nickname);
+                sessionStorage.setItem("residentId", data.data.resDocId);
+                sessionStorage.setItem("comHosId", data.data.comHosId);
+                sessionStorage.setItem("comHosName", data.data.comHosName);
                 $('#nameLi').text(sessionStorage.getItem("userName"));
                 $('#loginLi').css("display","none");
                 $('#registerLi').css("display","none");
                 $('#serviceLi').css("display","block");
                 $('#infoLi').css("display","block");
                 $('#logoutLi').css("display","block");
-                $('nickname').val(sessionStorage.getItem("userName"));
+                //$('#nickname').val(sessionStorage.getItem("userName"));
             } else {
                 window.location = "./resident-index.html";
             }
@@ -41,4 +46,14 @@ function logout(){
             }
         }
     })
+}
+
+function hasBing(){
+    var residentId = sessionStorage.getItem("residentId");
+    if(residentId == null || residentId == "null"){
+        return false;
+    } else {
+        return true;
+    }
+
 }

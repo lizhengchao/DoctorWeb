@@ -97,7 +97,7 @@
                 #{address, jdbcType=VARCHAR},
             </if>
             <if test="phoneNumber != null">
-                #{phoneNumber, jdbcType=INTEGER},
+                #{phoneNumber, jdbcType=VARCHAR},
             </if>
             now(),
             now(),
@@ -118,7 +118,7 @@
                 address = #{address, jdbcType=VARCHAR},
             </if>
             <if test="phoneNumber != null">
-                phoneNumber = #{phoneNumber, jdbcType=INTEGER},
+                phoneNumber = #{phoneNumber, jdbcType=VARCHAR},
             </if>
             modifyTime = now()
         </set>

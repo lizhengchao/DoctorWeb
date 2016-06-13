@@ -11,7 +11,7 @@ public class DoctorQuery extends BaseQuery{
     private Long identificationId;
     private Integer title;
     private Integer practiceType;
-    private Long phoneNumber;
+    private String phoneNumber;
     private  Integer comHosId;
 
     public Integer getComHosId() {
@@ -46,11 +46,11 @@ public class DoctorQuery extends BaseQuery{
         this.name = name;
     }
 
-    public Long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(Long phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
